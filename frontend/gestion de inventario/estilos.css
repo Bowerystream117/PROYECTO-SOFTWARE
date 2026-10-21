@@ -1,0 +1,51 @@
+:root { --fondo: #f8f5ef; --panel: #eee8dc; --texto: #292521; --rojo: #ce370e; --amarillo: #f7b52c; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font-family: Arial, sans-serif; display: flex; min-height: 100vh; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #a64b2d; outline-offset: 3px; }
+.barraLateral { width: 222px; flex-shrink: 0; background: var(--panel); padding: 26px 14px; display: flex; flex-direction: column; min-height: 100vh; }
+.marca { font-weight: bold; letter-spacing: 4px; font-size: 20px; margin: 0 10px 22px; }
+.opcion { display: block; width: 100%; border: 0; background: transparent; text-align: left; padding: 11px; border-radius: 8px; color: var(--texto); font-size: 14px; }
+.opcion:hover { background: #ded7cb; }
+.opcion.activa { background: var(--texto); color: white; font-weight: bold; }
+.pieMenu { margin-top: auto; padding-top: 70px; }
+main { padding: 26px 32px; flex: 1; min-width: 0; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+h1 { font-size: 28px; margin: 0; }
+.accionesCabecera { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.etiqueta { display: inline-block; border-radius: 20px; background: #e8e3da; padding: 5px 10px; font-size: 12px; font-weight: bold; white-space: nowrap; }
+.alerta { background: var(--amarillo); color: #493300; }
+button.primario { background: var(--rojo); border-color: var(--rojo); color: white; font-weight: bold; }
+button.primario:hover { background: #b62e09; }
+.filtros { display: flex; gap: 15px; margin-bottom: 14px; }
+input, select, .accionesCabecera button, .accionesDialogo button { padding: 12px; border: 1px solid #a59e93; border-radius: 8px; background: white; color: var(--texto); }
+#campoBuscar { width: 308px; max-width: 100%; }
+select { background: var(--fondo); }
+.contenedorTabla { overflow-x: auto; border: 1px solid #e8e2d7; border-radius: 10px; background: white; }
+table { border-collapse: collapse; width: 100%; text-align: left; font-size: 14px; }
+th { background: var(--panel); padding: 12px 16px; white-space: nowrap; }
+td { border-top: 1px solid #f1eee9; padding: 8px 16px; }
+.nivel { width: 76px; height: 8px; background: #e3ded4; border-radius: 20px; overflow: hidden; }
+.nivel span { display: block; height: 100%; background: var(--texto); border-radius: inherit; }
+.nivel.bajo span { background: var(--amarillo); }
+.accion { border: 0; background: transparent; padding: 5px 3px; color: var(--texto); }
+.accion:hover { text-decoration: underline; }
+.celdaAcciones { white-space: nowrap; }
+#mensajeEstado { font-size: 14px; line-height: 1.5; }
+.notaDemo { font-size: 12px; color: #706b63; margin-top: 26px; }
+dialog { border: 0; border-radius: 12px; padding: 26px; max-width: calc(100% - 32px); width: 420px; background: var(--fondo); }
+dialog::backdrop { background: #29252180; }
+dialog h2 { margin-top: 0; }
+dialog label { display: block; margin: 14px 0 6px; }
+dialog input { width: 100%; }
+.accionesDialogo { display: flex; gap: 12px; margin-top: 22px; }
+.soloLectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 900px) { header { align-items: flex-start; flex-direction: column; } .barraLateral { width: 190px; } main { padding: 24px 20px; } }
+@media (max-width: 620px) {
+  body { flex-direction: column; } .barraLateral { width: 100%; min-height: auto; padding: 20px; }
+  nav, .pieMenu { display: flex; flex-wrap: wrap; gap: 5px; } .opcion { width: auto; }
+  .pieMenu { padding-top: 12px; } .filtros { flex-wrap: wrap; } h1 { font-size: 25px; }
+  table { min-width: 680px; }
+}

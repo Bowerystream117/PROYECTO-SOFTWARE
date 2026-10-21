@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Iniciar sesión | Imperio</title>
   <link rel="stylesheet" href="estilos.css">
+  <script src="../compartido/sesion.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -20,11 +21,11 @@
     <section class="panelAcceso" aria-labelledby="tituloAcceso">
       <div class="contenedorFormulario">
         <h1 id="tituloAcceso">Iniciar sesión</h1>
-        <p class="introduccion">Ingresa con tu usuario para continuar.</p>
+        <p class="introduccion">Ingresa con tu usuario o correo para continuar.</p>
         <form id="formularioAcceso" novalidate>
           <div class="grupoCampo">
-            <label for="campoUsuario">Usuario</label>
-            <input id="campoUsuario" name="usuario" type="text" placeholder="Ej. monica"
+            <label for="campoUsuario">Usuario o correo</label>
+            <input id="campoUsuario" name="usuario" type="text" placeholder="Ej. duena@imperio.demo"
               autocomplete="username" required aria-describedby="mensajeEstado">
           </div>
           <div class="grupoCampo">
