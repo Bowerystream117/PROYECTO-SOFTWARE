@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión | Imperio</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="pantalla">
+    <aside class="panelMarca" aria-label="Imperio Clamatos y Snacks">
+      <div class="identidad">
+        <div class="logo" aria-label="Espacio para el logo">[LOGO]</div>
+        <p class="nombreMarca">IMPERIO</p>
+        <p class="giroMarca">CLAMATOS &amp; SNACKS</p>
+        <p class="descripcionSistema">Sistema de Gestión de Inventarios</p>
+      </div>
+    </aside>
+    <section class="panelAcceso" aria-labelledby="tituloAcceso">
+      <div class="contenedorFormulario">
+        <h1 id="tituloAcceso">Iniciar sesión</h1>
+        <p class="introduccion">Ingresa con tu usuario para continuar.</p>
+        <form id="formularioAcceso" novalidate>
+          <div class="grupoCampo">
+            <label for="campoUsuario">Usuario</label>
+            <input id="campoUsuario" name="usuario" type="text" placeholder="Ej. monica"
+              autocomplete="username" required aria-describedby="mensajeEstado">
+          </div>
+          <div class="grupoCampo">
+            <label for="campoContrasena">Contraseña</label>
+            <input id="campoContrasena" name="contrasena" type="password" placeholder="••••••••"
+              autocomplete="current-password" required aria-describedby="mensajeEstado">
+          </div>
+          <div class="acciones">
+            <button id="botonIniciar" class="boton botonIniciar" type="submit">Iniciar Sesión</button>
+            <button id="botonCancelar" class="boton botonCancelar" type="button">Cancelar</button>
+          </div>
+          <p class="notaAcceso">Acceso para Dueña y Empleados.</p>
+          <p id="mensajeEstado" class="mensajeEstado" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
