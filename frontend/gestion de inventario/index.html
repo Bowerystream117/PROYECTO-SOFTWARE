@@ -6,25 +6,12 @@
   <title>Inventario | Imperio</title>
   <link rel="stylesheet" href="estilos.css">
   <script src="../compartido/sesion.js" defer></script>
+  <script src="../compartido/datos.js" defer></script>
+  <script src="../compartido/navegacion.js" defer></script>
   <script src="script.js" defer></script>
 </head>
-<body>
-  <aside class="barraLateral">
-    <p class="marca">IMPERIO</p>
-    <nav aria-label="Menú principal">
-      <button class="opcion activa" aria-current="page">Inventario</button>
-      <button class="opcion pendiente">Movimientos</button>
-      <button class="opcion pendiente">Mermas</button>
-      <button class="opcion pendiente">Corte de caja</button>
-      <button class="opcion pendiente exclusivoDuena" hidden>Reportes</button>
-      <button class="opcion pendiente exclusivoDuena" hidden>Finanzas</button>
-      <button class="opcion pendiente exclusivoDuena" hidden>Perfiles</button>
-    </nav>
-    <div class="pieMenu">
-      <button id="botonCambiarVista" class="opcion" hidden>Cambiar a Empleado</button>
-      <button id="botonCerrarSesion" class="opcion">Cerrar sesión</button>
-    </div>
-  </aside>
+<body data-modulo="inventario">
+  <aside class="barraLateral"></aside>
   <main>
     <header>
       <h1 id="tituloInventario">Inventario</h1>

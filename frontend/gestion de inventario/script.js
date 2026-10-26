@@ -20,7 +20,7 @@
   const campoMinimo = buscarElemento("campoMinimo");
   const mensajeEstado = buscarElemento("mensajeEstado");
   const claveProductos = "imperioProductosDemoV1";
-  let vistaEmpleado = false;
+  const vistaEmpleado = sessionStorage.getItem("imperioVistaEmpleado") === "true";
   let productoEnEdicion = null;
   let productos = [
     { id: "1", nombre: "Camarón (kg)", categoria: "Mariscos", stock: 4, minimo: 5 },
@@ -33,17 +33,8 @@
     && typeof p.categoria === "string" && p.categoria.trim()
     && Number.isFinite(p.stock) && p.stock >= 0
     && Number.isFinite(p.minimo) && p.minimo >= 0;
-  try {
-    const guardados = localStorage.getItem(claveProductos);
-    if (guardados !== null) {
-      const lista = JSON.parse(guardados);
-      if (!Array.isArray(lista) || !lista.every(productoValido)
-        || new Set(lista.map(p => p.id)).size !== lista.length) throw new Error();
-      productos = lista;
-    }
-  } catch {
-    mensajeEstado.textContent = "No se pudieron leer los datos locales. Se muestran los productos de ejemplo.";
-  }
+  try { productos = datosImperio.leer().productos; }
+  catch (error) { mensajeEstado.textContent = error.message; return; }
   // Estos controles son solo de interfaz. El backend debe verificar cada permiso.
   function puedeEditar() { return sesion.rol === "duena" && !vistaEmpleado; }
   function normalizar(texto) {
@@ -51,7 +42,9 @@
   }
   function guardarProductos(nuevaLista) {
     try {
-      localStorage.setItem(claveProductos, JSON.stringify(nuevaLista));
+      const datos = datosImperio.leer();
+      datos.productos = nuevaLista;
+      datosImperio.guardar(datos);
       productos = nuevaLista;
       actualizarCategorias();
       dibujarInventario();
@@ -183,18 +176,10 @@
   botonCancelar.addEventListener("click", () => dialogoProducto.close());
   campoBuscar.addEventListener("input", dibujarInventario);
   selectorCategoria.addEventListener("change", dibujarInventario);
-  botonCambiarVista.addEventListener("click", () => {
-    if (sesion.rol !== "duena") return;
-    vistaEmpleado = !vistaEmpleado;
-    dibujarInventario();
+  window.addEventListener("storage", () => {
+    try { productos=datosImperio.leer().productos; dialogoProducto.close(); actualizarCategorias(); dibujarInventario(); }
+    catch (error) { mensajeEstado.textContent=error.message; }
   });
-  buscarElemento("botonCerrarSesion").addEventListener("click", () => {
-    sesionImperio.cerrar();
-    window.location.replace("../inicio de sesion/index.html");
-  });
-  document.querySelectorAll(".pendiente").forEach(boton => boton.addEventListener("click", () => {
-    mensajeEstado.textContent = "El módulo " + boton.textContent + " está pendiente de integración.";
-  }));
   actualizarCategorias();
   dibujarInventario();
 })();

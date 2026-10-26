@@ -49,3 +49,5 @@ dialog input { width: 100%; }
   .pieMenu { padding-top: 12px; } .filtros { flex-wrap: wrap; } h1 { font-size: 25px; }
   table { min-width: 680px; }
 }
+
+a.opcion { text-decoration:none; }
