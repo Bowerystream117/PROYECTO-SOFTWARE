@@ -1,0 +1,16 @@
+@import url("../gestion de inventario/estilos.css");
+.formularios { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.tarjeta { border:1px solid #e8e2d7; border-radius:10px; background:white; padding:16px; }
+.tarjeta h2, .tituloHistorial { font-size:16px; margin:0 0 14px; }
+.campos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.campo label { display:block; font-size:13px; margin-bottom:5px; }
+.campo input, .campo select { width:100%; min-width:0; padding:10px; background:white; font-size:14px; }
+.campo input[readonly] { background:#f8f5ef; }
+.registrar { width:100%; padding:12px; border:0; border-radius:8px; margin-top:12px; color:white; font-weight:bold; }
+.entrada { background:#ce370e; } .salida { background:#292521; }
+.registrar:disabled { opacity:.5; cursor:not-allowed; }
+.tituloHistorial { margin-top:18px; }
+.aviso { font-size:13px; color:#625c54; line-height:1.5; }
+#mensajeEstado.error { color:#a1250b; }
+@media(max-width:850px) { .formularios { grid-template-columns:1fr; } }
+@media(max-width:380px) { .campos { grid-template-columns:1fr; } }

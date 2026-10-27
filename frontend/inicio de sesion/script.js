@@ -1,6 +1,4 @@
 "use strict";
-
-// Los nombres no llevan espacios: "botón iniciar" se escribe botonIniciar.
 const formularioAcceso = document.getElementById("formularioAcceso");
 const campoUsuario = document.getElementById("campoUsuario");
 const campoContrasena = document.getElementById("campoContrasena");
@@ -8,45 +6,31 @@ const botonIniciar = document.getElementById("botonIniciar");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeEstado = document.getElementById("mensajeEstado");
 
-function mostrarMensaje(texto, esError = false) {
-  mensajeEstado.textContent = texto;
-  mensajeEstado.classList.toggle("error", esError);
-}
-
-function limpiarValidacion() {
-  campoUsuario.removeAttribute("aria-invalid");
-  campoContrasena.removeAttribute("aria-invalid");
-  mostrarMensaje("");
-}
-
-function iniciarSesion(evento) {
-  evento.preventDefault(); // Evita recargar la página al enviar el formulario.
-  limpiarValidacion();
-  const usuario = campoUsuario.value.trim();
-  // No se recortan espacios de contraseñas: pueden ser parte de ellas.
-  const contrasena = campoContrasena.value;
-
-  if (!usuario || !contrasena) {
-    campoUsuario.setAttribute("aria-invalid", String(!usuario));
-    campoContrasena.setAttribute("aria-invalid", String(!contrasena));
-    mostrarMensaje("Escribe tu usuario y contraseña para continuar.", true);
-    (!usuario ? campoUsuario : campoContrasena).focus();
+// Cuentas públicas de prueba; nunca colocar cuentas reales en el frontend.
+const cuentasDemo = [
+  { usuario: "duena", correo: "duena@imperio.demo", contrasena: "Duena123!", rol: "duena" },
+  { usuario: "empleado", correo: "empleado@imperio.demo", contrasena: "Empleado123!", rol: "empleado" }
+];
+formularioAcceso.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  const identificador = campoUsuario.value.trim().toLowerCase();
+  const cuenta = cuentasDemo.find(cuenta =>
+    (cuenta.usuario === identificador || cuenta.correo === identificador)
+    && cuenta.contrasena === campoContrasena.value);
+  if (!cuenta) {
+    mensajeEstado.textContent = "Usuario, correo o contraseña incorrectos.";
+    mensajeEstado.classList.add("error");
     return;
   }
-
-  // Maqueta: aquí se conectaría una API que valide las credenciales en el servidor.
-  // No guardar contraseñas en el código, localStorage ni la consola.
-  mostrarMensaje("Campos completos. Esta demostración aún no está conectada al sistema de acceso.");
-}
-
-function cancelarAcceso() {
+  try {
+    sesionImperio.guardar({ usuario: cuenta.usuario, rol: cuenta.rol });
+    window.location.href = "../gestion de inventario/index.html";
+  } catch {
+    mensajeEstado.textContent = "Permite el almacenamiento del navegador para iniciar la demostración.";
+  }
+});
+botonCancelar.addEventListener("click", () => {
   formularioAcceso.reset();
-  limpiarValidacion();
+  mensajeEstado.textContent = "";
   campoUsuario.focus();
-}
-
-// submit funciona tanto con el botón Iniciar como con la tecla Enter.
-botonIniciar.form.addEventListener("submit", iniciarSesion);
-botonCancelar.addEventListener("click", cancelarAcceso);
-campoUsuario.addEventListener("input", limpiarValidacion);
-campoContrasena.addEventListener("input", limpiarValidacion);
+});

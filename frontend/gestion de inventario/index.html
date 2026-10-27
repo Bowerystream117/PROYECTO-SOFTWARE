@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventario | Imperio</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="../compartido/sesion.js" defer></script>
+  <script src="../compartido/datos.js" defer></script>
+  <script src="../compartido/navegacion.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body data-modulo="inventario">
+  <aside class="barraLateral"></aside>
+  <main>
+    <header>
+      <h1 id="tituloInventario">Inventario</h1>
+      <div class="accionesCabecera">
+        <span id="etiquetaConsulta" class="etiqueta" hidden>Solo consulta</span>
+        <span id="contadorAlertas" class="etiqueta alerta">0 alertas de stock</span>
+        <button id="botonNuevoProducto" class="primario" hidden>+ Nuevo producto</button>
+      </div>
+    </header>
+    <div class="filtros">
+      <label class="soloLectores" for="campoBuscar">Buscar producto por nombre</label>
+      <input id="campoBuscar" type="search" placeholder="Buscar producto por nombre">
+      <label class="soloLectores" for="selectorCategoria">Categoría</label>
+      <select id="selectorCategoria"><option value="">Categoría: Todas</option></select>
+    </div>
+    <div class="contenedorTabla">
+      <table>
+        <caption class="soloLectores">Productos del inventario</caption>
+        <thead><tr>
+          <th scope="col">Producto</th><th scope="col">Categoría</th>
+          <th scope="col">Stock actual</th><th scope="col">Stock mín.</th>
+          <th scope="col">Nivel</th><th scope="col">Estado</th><th scope="col" id="columnaAcciones" hidden>Acciones</th>
+        </tr></thead>
+        <tbody id="cuerpoInventario"></tbody>
+      </table>
+    </div>
+    <p id="mensajeEstado" role="status" aria-live="polite"></p>
+    <p class="notaDemo">Demostración local · Los datos se guardan en este navegador.</p>
+  </main>
+  <dialog id="dialogoProducto" aria-labelledby="tituloDialogo">
+    <form id="formularioProducto">
+      <h2 id="tituloDialogo">Nuevo producto</h2>
+      <label for="campoNombre">Nombre (incluye unidad)</label>
+      <input id="campoNombre" required maxlength="80" placeholder="Ej. Camarón (kg)">
+      <label for="campoCategoria">Categoría</label>
+      <input id="campoCategoria" required maxlength="50" list="categoriasSugeridas">
+      <datalist id="categoriasSugeridas"><option value="Mariscos"><option value="Clamatos"><option value="Repostería"></datalist>
+      <label for="campoStock">Stock actual</label>
+      <input id="campoStock" type="number" required min="0" step="0.01">
+      <label for="campoMinimo">Stock mínimo</label>
+      <input id="campoMinimo" type="number" required min="0" step="0.01">
+      <div class="accionesDialogo">
+        <button class="primario" id="botonGuardar" type="submit">Guardar</button>
+        <button id="botonCancelar" type="button">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
