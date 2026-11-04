@@ -25,6 +25,10 @@ El proyecto se encuentra organizado en las siguientes carpetas y módulos princi
   - `inicio de sesion`
   - `productos no aptos`
   - `reporte de insumos, mermas y desperdicios`
+  - `db.js`
+  - `package-lock.json`
+  - `package.json`
+  - `server.js`
 - **`baseDeDatos/`**
   - `script_base_datos.sql`
 - **`frontend/`**
