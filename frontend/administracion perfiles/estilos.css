@@ -1,2 +1,24 @@
-@import url("../entrada y salida de insumos/estilos.css");
-/* Agrega aquí los estilos propios de este módulo. */
+@import url("../gestion de inventario/estilos.css");
+header { margin-bottom:20px; }
+.botonNuevo { padding:13px 18px; border:0; border-radius:8px; background:#ce370e; color:white; font-size:14px; font-weight:bold; }
+.botonNuevo:hover { background:#b72d09; }
+.paneles { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:16px; }
+.tarjeta { background:white; border:1px solid #e8e2d7; border-radius:10px; padding:18px; min-height:365px; }
+.tarjeta h2 { margin:0 0 14px; font-size:18px; }
+#formularioUsuario { display:flex; flex-direction:column; min-height:328px; }
+.campos { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.campos label { display:block; font-size:14px; margin-bottom:5px; }
+.campos input,.campos select { width:100%; min-width:0; height:40px; padding:8px 10px; background:white; }
+.permisos p { font-size:14px; line-height:1.4; margin:0 0 10px; }
+.permisos .notaDemo { margin-top:24px; font-size:12px; }
+.ayuda { font-size:12px; color:#6c665f; line-height:1.4; }
+.accionesFormulario { margin-top:auto; padding-top:20px; display:flex; gap:8px; }
+.accionesFormulario button { padding:12px; border-radius:8px; border:1px solid #aaa297; }
+.botonGuardar { background:#292521; color:white; font-weight:bold; flex:1; }
+.estado { display:inline-block; border-radius:20px; padding:5px 9px; background:#292521; color:white; font-size:12px; font-weight:bold; }
+.estado.baja { background:#e8e3da; color:#292521; }
+button:disabled { opacity:.6; cursor:wait; }
+#mensajeEstado:empty { display:none; }
+#mensajeEstado.error { color:#a1250b; }
+@media(max-width:900px) { .paneles { grid-template-columns:1fr; } .permisos { min-height:0; } }
+@media(max-width:400px) { .campos { grid-template-columns:1fr; } }
