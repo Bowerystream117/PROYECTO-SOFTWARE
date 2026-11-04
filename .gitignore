@@ -1,0 +1,10 @@
+# Dependencias de Node.js
+node_modules/
+
+# Configuración local y contraseñas
+.env
+.env.*
+!.env.example
+
+# Registros de errores
+*.log

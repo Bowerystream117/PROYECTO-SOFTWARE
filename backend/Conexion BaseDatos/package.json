@@ -1,0 +1,1 @@
+{"name":"imperio-acceso-mysql","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node --env-file=.env servidor.js"},"dependencies":{"express":"^4.21.2","mysql2":"^3.11.5"}}

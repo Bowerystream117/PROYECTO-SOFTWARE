@@ -4,7 +4,7 @@ window.sesionImperio = {
     try {
       const sesion=JSON.parse(sessionStorage.getItem("imperioSesion"));
       if (!sesion || !["duena","empleado"].includes(sesion.rol)) return null;
-      if (window.usuariosImperio) {
+      if (window.usuariosImperio && sesion.origen !== "mysql") {
         const cuenta=usuariosImperio.leer().find(u=>sesion.usuarioId?u.id===sesion.usuarioId:u.usuario===sesion.usuario);
         if (!cuenta || cuenta.estado!=="activo") { sessionStorage.removeItem("imperioSesion");return null; }
         sesion.usuarioId=cuenta.id;sesion.usuario=cuenta.usuario;sesion.rol=cuenta.rol;
