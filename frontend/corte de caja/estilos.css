@@ -1,0 +1,25 @@
+@import url("../gestion de inventario/estilos.css");
+header { margin-bottom:14px; }
+.estadoTurno { background:#292521; color:white; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:bold; white-space:nowrap; }
+.estadoTurno.cerrado { background:#6c665f; }
+.inicioTurno { color:#716b63; font-size:14px; margin:0 0 14px; }
+.grupoEmpleado { margin-bottom:14px; }
+.grupoEmpleado label { display:block; font-size:14px; margin-bottom:5px; }
+.grupoEmpleado select { width:280px; max-width:100%; background:white; padding:10px 12px; font-size:14px; }
+.indicadores { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:15px; margin-bottom:14px; }
+.indicador { background:white; border:1px solid #e8e2d7; border-radius:10px; padding:14px; }
+.indicador h2 { font-size:13px; line-height:1.4; font-weight:400; color:#716b63; margin:0 0 6px; }
+.indicador p { font-size:24px; font-weight:700; margin:0; overflow-wrap:anywhere; }
+.botonResumen { padding:13px 18px; background:#ce370e; color:white; border:0; border-radius:8px; font-size:14px; font-weight:700; }
+.botonResumen:hover { background:#b72d09; }
+.botonResumen:disabled { cursor:wait; opacity:.6; }
+#mensajeEstado:empty { display:none; }
+#mensajeEstado.error { color:#a1250b; }
+#tituloCortes { font-size:17px; margin:14px 0; }
+.notaDemo { line-height:1.5; max-width:850px; }
+#detalleResumen { display:grid; grid-template-columns:1fr auto; gap:12px; }
+#detalleResumen dt,#detalleResumen dd { margin:0; }
+#detalleResumen dd { font-weight:bold; }
+@media(max-width:1050px) { .indicadores { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:620px) { .indicadores { grid-template-columns:repeat(2,minmax(0,1fr)); } header { flex-direction:row; align-items:center; } table { min-width:520px; } }
+@media(max-width:360px) { .indicadores { grid-template-columns:1fr; } }

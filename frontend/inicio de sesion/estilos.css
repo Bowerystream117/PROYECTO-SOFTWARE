@@ -1,0 +1,62 @@
+/* Colores y medidas compartidas. */
+:root {
+  --fondoMarca: #eee8dc;
+  --fondoAcceso: #f8f5ef;
+  --colorTexto: #292521;
+  --colorSecundario: #6c665f;
+  --colorPrincipal: #cf360f;
+  --colorBorde: #a69e93;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--colorTexto);
+  background: var(--fondoAcceso);
+}
+.pantalla { display: grid; grid-template-columns: 38% 62%; min-height: 100vh; min-height: 100svh; }
+.panelMarca { background: var(--fondoMarca); display: flex; align-items: center; padding: 40px 32px; }
+.identidad { text-align: center; width: 265px; max-width: 100%; }
+.logo {
+  display: grid; place-items: center; width: 138px; height: 138px;
+  margin: 0 auto 18px; border: 2px solid var(--colorSecundario); border-radius: 50%;
+  font-size: 16px; letter-spacing: 3px; color: var(--colorSecundario);
+}
+.nombreMarca { margin: 0; font-size: 48px; font-weight: 700; letter-spacing: 8px; }
+.giroMarca { margin: 20px 0 40px; font-size: 18px; letter-spacing: 3px; color: var(--colorSecundario); }
+.descripcionSistema { margin: 0; font-size: 17px; line-height: 1.5; color: #57534e; }
+.panelAcceso { display: flex; justify-content: flex-end; align-items: center; padding: 60px 9% 60px 7%; }
+.contenedorFormulario { width: 425px; max-width: 100%; }
+h1 { margin: 0 0 27px; font-size: 36px; line-height: 1.2; }
+.introduccion { margin: 0 0 24px; font-size: 18px; line-height: 1.5; color: var(--colorSecundario); }
+.grupoCampo { margin-bottom: 23px; }
+label { display: block; margin-bottom: 7px; font-size: 16px; }
+input {
+  width: 100%; height: 55px; padding: 12px 15px; border: 1px solid var(--colorBorde);
+  border-radius: 9px; background: #fff; color: var(--colorTexto); font: inherit; font-size: 18px;
+}
+input::placeholder { color: #7d7b78; opacity: 1; }
+input[aria-invalid="true"] { border-color: #b32913; }
+input:focus-visible, button:focus-visible { outline: 3px solid #a64b2d; outline-offset: 3px; }
+.acciones { display: flex; gap: 13px; }
+.boton { flex: 1; min-height: 55px; padding: 12px; border-radius: 9px; font: inherit; font-size: 18px; cursor: pointer; }
+.botonIniciar { border: 1px solid var(--colorPrincipal); background: var(--colorPrincipal); color: white; font-weight: 700; }
+.botonIniciar:hover { background: #b92d0c; }
+.botonCancelar { border: 1px solid var(--colorSecundario); background: transparent; color: var(--colorTexto); }
+.botonCancelar:hover { background: #eee8dc; }
+.notaAcceso { margin: 22px 0 0; font-size: 14px; color: var(--colorSecundario); line-height: 1.5; }
+.mensajeEstado { margin: 12px 0 0; line-height: 1.5; font-size: 14px; color: var(--colorSecundario); }
+.mensajeEstado:empty { display: none; }
+.mensajeEstado.error { color: #b32913; }
+/* En celulares, la marca aparece arriba del formulario. */
+@media (max-width: 760px) {
+  .pantalla { grid-template-columns: 1fr; }
+  .panelMarca { justify-content: center; padding: 30px 24px; }
+  .logo { width: 80px; height: 80px; font-size: 12px; }
+  .nombreMarca { font-size: 34px; letter-spacing: 6px; }
+  .giroMarca { font-size: 14px; margin: 12px 0 20px; }
+  .descripcionSistema { font-size: 14px; }
+  .panelAcceso { justify-content: center; padding: 40px 24px; }
+  h1 { font-size: 30px; }
+}
+@media (max-width: 360px) { .acciones { flex-direction: column; } }

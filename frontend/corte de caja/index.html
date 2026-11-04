@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corte de caja | Imperio</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="../compartido/sesion.js" defer></script>
+  <script src="../compartido/datos.js" defer></script>
+  <script src="../compartido/navegacion.js" defer></script>
+  <script src="servicio.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body data-modulo="caja">
+  <aside class="barraLateral"></aside>
+  <main>
+    <header><h1>Corte de caja</h1><span id="estadoTurno" class="estadoTurno">Cargando turno…</span></header>
+    <p id="inicioTurno" class="inicioTurno">Inicio del turno: —</p>
+    <div id="grupoEmpleado" class="grupoEmpleado" hidden>
+      <label for="selectorEmpleado">Empleado del turno</label>
+      <select id="selectorEmpleado" aria-describedby="ayudaTurno"></select>
+      <p id="ayudaTurno" class="soloLectores">Cada opción identifica un usuario y su turno. También se incluyen los turnos de la dueña.</p>
+    </div>
+    <section class="indicadores" aria-label="Resumen del turno" aria-live="polite">
+      <article class="indicador"><h2>Entradas registradas</h2><p id="totalEntradas">—</p></article>
+      <article class="indicador"><h2>Salidas registradas</h2><p id="totalSalidas">—</p></article>
+      <article class="indicador"><h2>Mermas del turno</h2><p id="totalMermas">—</p></article>
+      <article class="indicador"><h2>Ventas del turno (MXN)</h2><p id="totalVentas">—</p></article>
+      <article class="indicador"><h2>Efectivo en caja (MXN)</h2><p id="totalEfectivo">—</p></article>
+    </section>
+    <button id="botonGenerarResumen" class="botonResumen" disabled>Generar resumen de turno</button>
+    <p id="mensajeEstado" role="status" aria-live="polite"></p>
+    <section id="seccionCortes" hidden aria-labelledby="tituloCortes">
+      <h2 id="tituloCortes">Últimos cortes registrados</h2>
+      <div class="contenedorTabla"><table>
+        <caption class="soloLectores">Resúmenes guardados por turno</caption>
+        <thead><tr><th scope="col">Fecha</th><th scope="col">Empleado</th><th scope="col">Ventas</th><th scope="col">Mermas</th></tr></thead>
+        <tbody id="cuerpoCortes"></tbody>
+      </table></div>
+    </section>
+    <p id="notaDatos" class="notaDemo"></p>
+  </main>
+  <dialog id="dialogoResumen" aria-labelledby="tituloResumen">
+    <h2 id="tituloResumen">Resumen de turno</h2>
+    <p id="detalleTurno"></p>
+    <dl id="detalleResumen"></dl>
+    <p id="notaResumen" class="notaDemo"></p>
+    <p>Generar el resumen no cierra el turno.</p>
+    <div class="accionesDialogo"><button id="botonDescargarResumen" class="botonResumen">Descargar JSON</button><button id="botonCerrarResumen">Cerrar</button></div>
+  </dialog>
+</body>
+</html>
