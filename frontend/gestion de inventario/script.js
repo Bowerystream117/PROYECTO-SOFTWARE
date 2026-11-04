@@ -1,5 +1,5 @@
 "use strict";
-(() => {
+(async () => {
   const sesion = sesionImperio.leer();
   if (!sesion) {
     window.location.replace("../inicio de sesion/index.html");
@@ -22,19 +22,33 @@
   const claveProductos = "imperioProductosDemoV1";
   const vistaEmpleado = sessionStorage.getItem("imperioVistaEmpleado") === "true";
   let productoEnEdicion = null;
-  let productos = [
-    { id: "1", nombre: "Camarón (kg)", categoria: "Mariscos", stock: 4, minimo: 5 },
-    { id: "2", nombre: "Clamato Imperio (L)", categoria: "Clamatos", stock: 18, minimo: 10 },
-    { id: "3", nombre: "Fresa (kg)", categoria: "Repostería", stock: 2, minimo: 3 },
-    { id: "4", nombre: "Harina para waffles (kg)", categoria: "Repostería", stock: 12, minimo: 6 }
-  ];
-  const productoValido = p => p && typeof p.id === "string"
-    && typeof p.nombre === "string" && p.nombre.trim()
-    && typeof p.categoria === "string" && p.categoria.trim()
-    && Number.isFinite(p.stock) && p.stock >= 0
-    && Number.isFinite(p.minimo) && p.minimo >= 0;
-  try { productos = datosImperio.leer().productos; }
-  catch (error) { mensajeEstado.textContent = error.message; return; }
+ let productos = [];
+
+// Cargamos los productos reales desde la API del backend conectada a MySQL
+try {
+    const respuesta = await fetch("/api/inventario");
+    
+    if (!respuesta.headers.get("content-type")?.includes("application/json")) {
+        throw new Error("Abre el proyecto desde http://localhost:3000.");
+    }
+    
+    const datosBD = await respuesta.json();
+    
+    // Adaptamos el formato de la base de datos a lo que usa la interfaz visual
+    productos = datosBD.map(p => ({
+        id: String(p.id_producto),
+        nombre: `${p.nombre} (${p.unidad_medida})`,
+        categoria: p.categoria_nombre || "General",
+        stock: Number(p.stock_actual),
+        minimo: Number(p.stock_minimo)
+    }));
+} catch (error) {
+    console.error("Error al cargar el inventario:", error);
+    if (mensajeEstado) {
+        mensajeEstado.textContent = error.message;
+        mensajeEstado.classList.add("error");
+    }
+}
   // Estos controles son solo de interfaz. El backend debe verificar cada permiso.
   function puedeEditar() { return sesion.rol === "duena" && !vistaEmpleado; }
   function normalizar(texto) {

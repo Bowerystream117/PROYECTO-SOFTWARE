@@ -2,6 +2,7 @@ import express from "express";
 import { fileURLToPath } from "node:url";
 import conexion from "./Conexion BaseDatos/conexion.js";
 import rutasInicioSesion from "./inicio de sesion/rutas.js";
+import rutasInventario from "./gestion de inventario/rutas.js";
 
 const app = express();
 const puerto = Number(process.env.PORT || 3000);
@@ -9,6 +10,7 @@ const puerto = Number(process.env.PORT || 3000);
 app.use(express.json({ limit: "4kb" }));
 
 app.use("/api", rutasInicioSesion);
+app.use("/api/inventario", rutasInventario );
 
 app.get("/", (_req, res) => {
   res.redirect("/inicio%20de%20sesion/index.html");
