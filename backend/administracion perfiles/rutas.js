@@ -1,7 +1,6 @@
 import { Router } from "express";
 import conexion from "../Conexion BaseDatos/conexion.js";
 import { exigirDuena } from "../inicio de sesion/sesiones.js";
-import { proteger } from "../inicio de sesion/claves.js";
 
 const rutas = Router();
 rutas.use(exigirDuena);
@@ -42,7 +41,7 @@ async function guardar(req, res, next) {
       [datos.rol === "duena" ? "Dueña" : "Empleado"]);
     if (!roles.length) return res.status(409).json({ mensaje: "El rol seleccionado falta en la tabla roles." });
     const valores = [nombre, correo, roles[0].id_rol, datos.estado === "activo" ? 1 : 2];
-    if (clave) valores.push(await proteger(clave));
+    if (clave) valores.push(clave);
     if (id) {
       const cambioClave = clave ? ", password_hash=?" : "";
       const [resultado] = await conexion.execute(

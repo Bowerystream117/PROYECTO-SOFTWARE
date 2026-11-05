@@ -1,4 +1,3 @@
-import { comprobar, proteger } from "./claves.js";
 import { crearToken } from "./sesiones.js";
 import conexion from "../Conexion BaseDatos/conexion.js";
 
@@ -35,9 +34,7 @@ export async function iniciarSesion(req, res) {
 
     const usuario = usuarios[0];
 
-    // Las cuentas anteriores se actualizan después de verificar la clave.
-    const contrasenaCorrecta =
-      usuario && await comprobar(contrasena, usuario.password_hash);
+    const contrasenaCorrecta = usuario && contrasena === usuario.password_hash;
 
     // Convierte "Dueña" en "duena" y "Empleado" en "empleado".
     const rol = usuario?.rol
@@ -55,13 +52,6 @@ export async function iniciarSesion(req, res) {
       });
     }
 
-    if (usuario.password_hash === contrasena) {
-    const hash = await proteger(contrasena);
-    const [actualizacion] = await conexion.execute(
-      "UPDATE usuarios SET password_hash=? WHERE id_usuario=? AND activo=1 AND BINARY password_hash=?",
-      [hash, usuario.id_usuario, usuario.password_hash]);
-    if (!actualizacion.affectedRows) return res.status(401).json({ mensaje: "Vuelve a iniciar sesión." });
-    }
     res.set("Cache-Control", "no-store");
 
     return res.json({
