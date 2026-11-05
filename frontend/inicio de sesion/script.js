@@ -21,7 +21,7 @@ formularioAcceso.addEventListener("submit", async evento => {
     }
     const cuenta = await respuesta.json();
     if (!respuesta.ok) throw new Error(cuenta.mensaje || "No se pudo iniciar sesión.");
-    sesionImperio.guardar({usuarioId:cuenta.id,usuario:cuenta.usuario,rol:cuenta.rol,origen:"mysql"});
+    sesionImperio.guardar({token:cuenta.token,usuarioId:cuenta.id,usuario:cuenta.usuario,rol:cuenta.rol,origen:"mysql"});
     window.location.href="../gestion de inventario/index.html";
   } catch(error) {
     mensajeEstado.textContent=error instanceof TypeError ? "No se pudo conectar al servidor. Abre http://localhost:3000." : error.message;

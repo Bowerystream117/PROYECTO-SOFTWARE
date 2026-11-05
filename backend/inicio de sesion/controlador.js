@@ -1,3 +1,4 @@
+import { crearToken } from "./sesiones.js";
 import conexion from "../Conexion BaseDatos/conexion.js";
 
 export async function iniciarSesion(req, res) {
@@ -57,6 +58,7 @@ export async function iniciarSesion(req, res) {
 
     return res.json({
       id: usuario.id_usuario,
+      token: crearToken(usuario.id_usuario),
       usuario: usuario.nombre,
       correo: usuario.correo,
       rol
