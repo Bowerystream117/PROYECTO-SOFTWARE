@@ -1,15 +1,16 @@
+import { comprobar, proteger } from "./claves.js";
 import { crearToken } from "./sesiones.js";
 import conexion from "../Conexion BaseDatos/conexion.js";
 
 export async function iniciarSesion(req, res) {
-  const { correo, contrasena } = req.body || {};
+  const { correo: acceso, contrasena } = req.body || {};
 
   if (
-    typeof correo !== "string" ||
+    typeof acceso !== "string" ||
     typeof contrasena !== "string" ||
-    !correo.trim() ||
+    !acceso.trim() ||
     !contrasena ||
-    correo.length > 100 ||
+    acceso.length > 100 ||
     contrasena.length > 128
   ) {
     return res.status(400).json({
@@ -29,14 +30,14 @@ export async function iniciarSesion(req, res) {
        JOIN roles r ON r.id_rol = u.id_rol
        WHERE u.correo = ? AND u.activo = 1
        LIMIT 1`,
-      [correo.trim()]
+      [acceso.trim()]
     );
 
     const usuario = usuarios[0];
 
-    // Comparación directa, sin hash.
+    // Las cuentas anteriores se actualizan después de verificar la clave.
     const contrasenaCorrecta =
-      usuario && usuario.password_hash === contrasena;
+      usuario && await comprobar(contrasena, usuario.password_hash);
 
     // Convierte "Dueña" en "duena" y "Empleado" en "empleado".
     const rol = usuario?.rol
@@ -54,6 +55,13 @@ export async function iniciarSesion(req, res) {
       });
     }
 
+    if (usuario.password_hash === contrasena) {
+    const hash = await proteger(contrasena);
+    const [actualizacion] = await conexion.execute(
+      "UPDATE usuarios SET password_hash=? WHERE id_usuario=? AND activo=1 AND BINARY password_hash=?",
+      [hash, usuario.id_usuario, usuario.password_hash]);
+    if (!actualizacion.affectedRows) return res.status(401).json({ mensaje: "Vuelve a iniciar sesión." });
+    }
     res.set("Cache-Control", "no-store");
 
     return res.json({

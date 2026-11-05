@@ -13,14 +13,14 @@
  function nuevo(enfocar=true) {
    usuarioEnEdicion=null;formularioUsuario.reset();elemento("tituloFormulario").textContent="Nuevo usuario";
    elemento("campoContrasena").required=true;botonCancelarEdicion.hidden=true;
-   elemento("ayudaContrasena").textContent="Contraseña de prueba de 8 a 128 caracteres.";
+   elemento("ayudaContrasena").textContent="Contraseña de 8 a 128 caracteres.";
    botonGuardarUsuario.textContent="Guardar usuario";
    if(enfocar) elemento("campoNombre").focus();
  }
  function editar(usuario) {
    if(guardando)return;
    nuevo(false);usuarioEnEdicion=usuario.id;
-   for(const clave of ["nombre","usuario","correo","rol","estado"]) formularioUsuario.elements[clave].value=usuario[clave]||"";
+   for(const clave of ["nombre","correo","rol","estado"]) formularioUsuario.elements[clave].value=usuario[clave]||"";
    elemento("tituloFormulario").textContent="Editar usuario";elemento("campoContrasena").required=false;
    elemento("ayudaContrasena").textContent="Deja la contraseña vacía para conservar la actual.";
    botonGuardarUsuario.textContent="Guardar cambios";botonCancelarEdicion.hidden=false;elemento("campoNombre").focus();
@@ -30,8 +30,7 @@
    const cuerpo=elemento("cuerpoUsuarios");cuerpo.replaceChildren();
    usuarios.forEach(usuario=>{
      const fila=document.createElement("tr");
-     const acceso=usuario.ultimoAcceso?new Date(usuario.ultimoAcceso).toLocaleString("es-MX",{dateStyle:"short",timeStyle:"short"}):"Sin accesos";
-     [usuario.nombre,usuario.usuario,usuario.rol==="duena"?"Dueña":"Empleado",acceso].forEach(valor=>{
+     [usuario.nombre,usuario.correo,usuario.rol==="duena"?"Dueña":"Empleado"].forEach(valor=>{
        const celda=document.createElement("td");celda.textContent=valor;fila.append(celda);
      });
      const estado=document.createElement("td"),etiqueta=document.createElement("span");
@@ -40,7 +39,7 @@
      botonEditar.className="accion";botonEditar.textContent="Editar";botonEditar.setAttribute("aria-label","Editar "+usuario.nombre);
      botonEditar.addEventListener("click",()=>editar(usuario));acciones.append(botonEditar);fila.append(estado,acciones);cuerpo.append(fila);
    });
-   if(!usuarios.length) {const fila=document.createElement("tr"),celda=document.createElement("td");celda.colSpan=6;celda.textContent="No hay usuarios registrados.";fila.append(celda);cuerpo.append(fila);}
+   if(!usuarios.length) {const fila=document.createElement("tr"),celda=document.createElement("td");celda.colSpan=5;celda.textContent="No hay usuarios registrados.";fila.append(celda);cuerpo.append(fila);}
  }
  botonNuevoUsuario.addEventListener("click",()=>{if(!guardando){nuevo();mensaje("");}});
  botonCancelarEdicion.addEventListener("click",()=>{if(!guardando){nuevo();mensaje("");}});

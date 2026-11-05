@@ -1,21 +1,25 @@
 "use strict";
-// Esta opción solo cambia el servicio de perfiles; el resto requiere integrar su backend.
-window.configuracionPerfiles={modo:"demo",urlApi:"/api"};
-window.servicioPerfiles={
-  async solicitar(ruta,opciones={}) {
-    const respuesta=await fetch(configuracionPerfiles.urlApi+ruta,{credentials:"include",...opciones,
-      headers:{"Content-Type":"application/json",...opciones.headers}});
-    if (!respuesta.ok) throw new Error("No se pudo completar la operación ("+respuesta.status+").");
-    return respuesta.json();
+window.servicioPerfiles = {
+  async solicitar(ruta, opciones = {}) {
+    const respuesta = await fetch("/api/usuarios" + ruta, {
+      ...opciones,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (sesionImperio.leer()?.token || "")
+      }
+    });
+    if (!respuesta.headers.get("content-type")?.includes("application/json")) {
+      throw new Error("Abre el sistema desde el servidor de Imperio (localhost:3000).");
+    }
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "No se pudo completar la operación.");
+    return datos;
   },
-  async listar() {
-    return configuracionPerfiles.modo==="demo"?usuariosImperio.listar():this.solicitar("/usuarios");
-  },
-  async guardar(datos,id) {
-    if (configuracionPerfiles.modo==="demo") return usuariosImperio.guardar(datos,id);
-    const envio={...datos};if (id && !envio.contrasena) delete envio.contrasena;
-    return this.solicitar("/usuarios"+(id?"/"+encodeURIComponent(id):""),{
-      method:id?"PUT":"POST",body:JSON.stringify(envio)
+  listar() { return this.solicitar(""); },
+  guardar(datos, id) {
+    return this.solicitar(id ? "/" + encodeURIComponent(id) : "", {
+      method: id ? "PUT" : "POST",
+      body: JSON.stringify(datos)
     });
   }
 };

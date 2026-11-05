@@ -1,3 +1,4 @@
+import rutasUsuarios from "./administracion perfiles/rutas.js";
 import express from "express";
 import { fileURLToPath } from "node:url";
 import conexion from "./Conexion BaseDatos/conexion.js";
@@ -9,6 +10,7 @@ const puerto = Number(process.env.PORT || 3000);
 
 app.use(express.json({ limit: "4kb" }));
 
+app.use("/api/usuarios", rutasUsuarios);
 app.use("/api", rutasInicioSesion);
 app.use("/api/inventario", rutasInventario );
 

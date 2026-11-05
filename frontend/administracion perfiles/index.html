@@ -3,7 +3,6 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Administración de perfiles | Imperio</title>
 <link rel="stylesheet" href="estilos.css">
-<script src="../compartido/usuarios.js" defer></script>
 <script src="../compartido/sesion.js" defer></script>
 <script src="../compartido/navegacion.js" defer></script>
 <script src="servicio.js" defer></script><script src="script.js" defer></script>
@@ -11,26 +10,24 @@
 <main>
 <header><h1>Administración de perfiles</h1><button id="botonNuevoUsuario" class="botonNuevo">+ Nuevo usuario</button></header>
 <div class="contenedorTabla"><table><caption class="soloLectores">Usuarios del sistema</caption>
-<thead><tr><th scope="col">Nombre</th><th scope="col">Usuario</th><th scope="col">Rol</th><th scope="col">Último acceso</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
-<tbody id="cuerpoUsuarios"><tr><td colspan="6">Cargando usuarios…</td></tr></tbody></table></div>
+<thead><tr><th scope="col">Nombre</th><th scope="col">Correo</th><th scope="col">Rol</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
+<tbody id="cuerpoUsuarios"><tr><td colspan="5">Cargando usuarios…</td></tr></tbody></table></div>
 <p id="mensajeEstado" role="status" aria-live="polite"></p>
 <div class="paneles">
 <section class="tarjeta"><form id="formularioUsuario">
 <h2 id="tituloFormulario">Nuevo usuario</h2>
 <div class="campos">
-<div><label for="campoNombre">Nombre</label><input id="campoNombre" name="nombre" required maxlength="80" autocomplete="off"></div>
-<div><label for="campoUsuario">Usuario</label><input id="campoUsuario" name="usuario" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9._\-]{3,40}" title="3 a 40 letras sin acentos, números, punto, guion o guion bajo" autocomplete="off"></div>
+<div><label for="campoNombre">Nombre</label><input id="campoNombre" name="nombre" required maxlength="100" autocomplete="off"></div>
 <div><label for="campoContrasena">Contraseña</label><input id="campoContrasena" name="contrasena" type="password" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="ayudaContrasena"></div>
 <div><label for="selectorRol">Rol</label><select id="selectorRol" name="rol"><option value="empleado">Empleado</option><option value="duena">Dueña</option></select></div>
-<div><label for="campoCorreo">Correo (opcional)</label><input id="campoCorreo" name="correo" type="email" maxlength="120" autocomplete="off"></div>
+<div><label for="campoCorreo">Correo</label><input id="campoCorreo" name="correo" type="email" required maxlength="100" autocomplete="off"></div>
 <div><label for="selectorEstado">Estado</label><select id="selectorEstado" name="estado"><option value="activo">Activo</option><option value="baja">Baja</option></select></div>
 </div>
-<p id="ayudaContrasena" class="ayuda">Contraseña de prueba de 8 a 128 caracteres.</p>
+<p id="ayudaContrasena" class="ayuda">Contraseña de 8 a 128 caracteres.</p>
 <div class="accionesFormulario"><button id="botonGuardarUsuario" class="botonGuardar" type="submit">Guardar usuario</button><button id="botonCancelarEdicion" type="button" hidden>Cancelar edición</button></div>
 </form></section>
 <section class="tarjeta permisos"><h2>Permisos por rol</h2>
 <p><strong>Dueña:</strong> Inventario (ver y editar), Movimientos, Mermas, Corte de caja, Reportes, Usuarios y Finanzas.</p>
 <p><strong>Empleado:</strong> Inventario (solo ver), Movimientos, Mermas y Corte de caja.</p>
-<p class="notaDemo">Demostración local. Usa únicamente contraseñas de prueba. Las cuentas se guardan en este navegador.</p>
 </section></div>
 </main></body></html>
