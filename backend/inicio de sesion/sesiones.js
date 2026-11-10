@@ -28,3 +28,21 @@ export async function exigirDuena(req, res, next) {
     next();
   } catch (error) { next(error); }
 }
+
+// Permite movimientos a dueña y empleado; el usuario procede del token.
+export async function exigirSesion(req, res, next) {
+  const token = req.get("Authorization")?.replace(/^Bearer /, "");
+  const sesion = sesiones.get(token);
+  if (!sesion || sesion.vence <= Date.now()) {
+    return res.status(401).json({ mensaje: "Vuelve a iniciar sesión para continuar." });
+  }
+  try {
+    const [filas] = await conexion.execute(
+      "SELECT r.nombre FROM usuarios u JOIN roles r ON r.id_rol=u.id_rol WHERE u.id_usuario=? AND u.activo=1",
+      [sesion.id]);
+    const rol = filas[0]?.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    if (!["duena", "empleado"].includes(rol)) return res.status(403).json({ mensaje: "Se requiere una cuenta activa de dueña o empleado." });
+    req.idUsuario = sesion.id;
+    next();
+  } catch (error) { next(error); }
+}
