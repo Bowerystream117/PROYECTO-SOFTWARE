@@ -1,8 +1,1 @@
-{
-  "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^18.0.9",
-    "express": "^5.3.0",
-    "mysql2": "^3.24.6"
-  }
-}
+{"name":"imperio-acceso-mysql","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node --env-file=.env servidor.js"},"dependencies":{"express":"^4.21.2","mysql2":"^3.11.5"}}

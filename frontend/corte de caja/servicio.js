@@ -47,8 +47,8 @@ window.servicioCaja = (() => {
     return {turno,
       entradas:movimientos.filter(m=>m.tipo==="entrada").length,
       salidas:movimientos.filter(m=>m.tipo==="salida").length,
-      mermas:0,ventas:0,efectivo:0,
-      pendientes:["Mermas","Ventas","Efectivo en caja"]};
+      mermas:movimientos.filter(m=>m.origen==="merma").length,ventas:0,efectivo:0,
+      pendientes:["Ventas","Efectivo en caja"]};
   }
   return {
     esDuena,

@@ -6,27 +6,28 @@ const botonIniciar = document.getElementById("botonIniciar");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeEstado = document.getElementById("mensajeEstado");
 
-// Cuentas públicas de prueba; nunca colocar cuentas reales en el frontend.
-const cuentasDemo = [
-  { usuario: "duena", correo: "duena@imperio.demo", contrasena: "Duena123!", rol: "duena" },
-  { usuario: "empleado", correo: "empleado@imperio.demo", contrasena: "Empleado123!", rol: "empleado" }
-];
-formularioAcceso.addEventListener("submit", (evento) => {
+// Acceso mediante los usuarios registrados en MySQL.
+formularioAcceso.addEventListener("submit", async evento => {
   evento.preventDefault();
-  const identificador = campoUsuario.value.trim().toLowerCase();
-  const cuenta = cuentasDemo.find(cuenta =>
-    (cuenta.usuario === identificador || cuenta.correo === identificador)
-    && cuenta.contrasena === campoContrasena.value);
-  if (!cuenta) {
-    mensajeEstado.textContent = "Usuario, correo o contraseña incorrectos.";
-    mensajeEstado.classList.add("error");
-    return;
-  }
+  botonIniciar.disabled = true;
+  mensajeEstado.textContent = "";
   try {
-    sesionImperio.guardar({ usuario: cuenta.usuario, rol: cuenta.rol });
-    window.location.href = "../gestion de inventario/index.html";
-  } catch {
-    mensajeEstado.textContent = "Permite el almacenamiento del navegador para iniciar la demostración.";
+    const respuesta = await fetch("/api/login", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo: campoUsuario.value, contrasena: campoContrasena.value })
+    });
+    if (!respuesta.headers.get("content-type")?.includes("application/json")) {
+      throw new Error("Abre el proyecto desde http://localhost:3000.");
+    }
+    const cuenta = await respuesta.json();
+    if (!respuesta.ok) throw new Error(cuenta.mensaje || "No se pudo iniciar sesión.");
+    sesionImperio.guardar({token:cuenta.token,usuarioId:cuenta.id,usuario:cuenta.usuario,rol:cuenta.rol,origen:"mysql"});
+    window.location.href="../gestion de inventario/index.html";
+  } catch(error) {
+    mensajeEstado.textContent=error instanceof TypeError ? "No se pudo conectar al servidor. Abre http://localhost:3000." : error.message;
+    mensajeEstado.classList.add("error");
+  } finally {
+    botonIniciar.disabled = false;
   }
 });
 botonCancelar.addEventListener("click", () => {

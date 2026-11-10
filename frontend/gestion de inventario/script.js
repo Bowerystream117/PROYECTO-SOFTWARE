@@ -1,5 +1,5 @@
 "use strict";
-(() => {
+(async () => {
   const sesion = sesionImperio.leer();
   if (!sesion) {
     window.location.replace("../inicio de sesion/index.html");
@@ -19,40 +19,47 @@
   const campoStock = buscarElemento("campoStock");
   const campoMinimo = buscarElemento("campoMinimo");
   const mensajeEstado = buscarElemento("mensajeEstado");
-  const claveProductos = "imperioProductosDemoV1";
+
   const vistaEmpleado = sessionStorage.getItem("imperioVistaEmpleado") === "true";
   let productoEnEdicion = null;
-  let productos = [
-    { id: "1", nombre: "Camarón (kg)", categoria: "Mariscos", stock: 4, minimo: 5 },
-    { id: "2", nombre: "Clamato Imperio (L)", categoria: "Clamatos", stock: 18, minimo: 10 },
-    { id: "3", nombre: "Fresa (kg)", categoria: "Repostería", stock: 2, minimo: 3 },
-    { id: "4", nombre: "Harina para waffles (kg)", categoria: "Repostería", stock: 12, minimo: 6 }
-  ];
-  const productoValido = p => p && typeof p.id === "string"
-    && typeof p.nombre === "string" && p.nombre.trim()
-    && typeof p.categoria === "string" && p.categoria.trim()
-    && Number.isFinite(p.stock) && p.stock >= 0
-    && Number.isFinite(p.minimo) && p.minimo >= 0;
-  try { productos = datosImperio.leer().productos; }
-  catch (error) { mensajeEstado.textContent = error.message; return; }
+  let productos = [];
+  async function solicitud(metodo, id, producto) {
+    const ruta = "/api/inventario" + (id ? "/" + encodeURIComponent(id) : "");
+    const respuesta = await fetch(ruta, {
+      method: metodo,
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + (sesion.token || "") },
+      body: producto ? JSON.stringify(producto) : undefined
+    });
+    if (!respuesta.headers.get("content-type")?.includes("application/json")) {
+      throw new Error("Abre el proyecto desde http://localhost:3000.");
+    }
+    const datos = await respuesta.json();
+    if (!respuesta.ok) throw new Error(datos.mensaje || "No se pudo completar la operación.");
+    return datos;
+  }
+  async function cargarProductos() {
+    const filas = await solicitud("GET");
+    productos = filas.map(p => ({
+      id: String(p.id_producto), nombre: p.nombre, unidad: p.unidad_medida,
+      categoria: p.categoria_nombre, codigo: p.codigo_barras,
+      compra: p.precio_compra, venta: p.precio_venta,
+      stock: Number(p.stock_actual), minimo: Number(p.stock_minimo)
+    }));
+    actualizarCategorias();
+    dibujarInventario();
+  }
+  async function refrescar(mensaje = "") {
+    try {
+      await cargarProductos();
+      mensajeEstado.textContent = mensaje;
+    } catch (error) {
+      mensajeEstado.textContent = (mensaje ? mensaje + " " : "") + "No se pudo actualizar la lista. " + error.message;
+    }
+  }
   // Estos controles son solo de interfaz. El backend debe verificar cada permiso.
   function puedeEditar() { return sesion.rol === "duena" && !vistaEmpleado; }
   function normalizar(texto) {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  }
-  function guardarProductos(nuevaLista) {
-    try {
-      const datos = datosImperio.leer();
-      datos.productos = nuevaLista;
-      datosImperio.guardar(datos);
-      productos = nuevaLista;
-      actualizarCategorias();
-      dibujarInventario();
-      return true;
-    } catch {
-      mensajeEstado.textContent = "No se guardaron los cambios. Revisa el almacenamiento del navegador.";
-      return false;
-    }
   }
   function actualizarCategorias() {
     const seleccion = selectorCategoria.value;
@@ -88,6 +95,11 @@
       const bajo = producto.stock < producto.minimo;
       crearCelda(fila, producto.nombre);
       crearCelda(fila, producto.categoria);
+      crearCelda(fila, producto.unidad ?? "—");
+      crearCelda(fila, producto.codigo ?? "—");
+      crearCelda(fila, producto.compra ?? "—");
+      crearCelda(fila, producto.venta ?? "—");
+
       crearCelda(fila, producto.stock.toLocaleString("es-MX"));
       crearCelda(fila, producto.minimo.toLocaleString("es-MX"));
       const celdaNivel = crearCelda(fila, "");
@@ -119,12 +131,15 @@
         botonEliminar.className = "accion";
         botonEliminar.textContent = "Eliminar";
         botonEliminar.setAttribute("aria-label", "Eliminar " + producto.nombre);
-        botonEliminar.addEventListener("click", () => {
+        botonEliminar.addEventListener("click", async () => {
           if (!puedeEditar()) return;
           if (window.confirm("¿Eliminar " + producto.nombre + "?")) {
-            if (guardarProductos(productos.filter(p => p.id !== producto.id))) {
-              mensajeEstado.textContent = "Producto eliminado.";
-            }
+            botonEliminar.disabled = true;
+            try {
+              await solicitud("DELETE", producto.id);
+              await refrescar("Producto eliminado.");
+            } catch (error) { mensajeEstado.textContent = error.message; }
+            finally { botonEliminar.disabled = false; }
           }
         });
         acciones.append(botonEditar, document.createTextNode(" · "), botonEliminar);
@@ -133,7 +148,7 @@
     });
     if (!filtrados.length) {
       const fila = document.createElement("tr");
-      crearCelda(fila, "No hay productos que coincidan con los filtros.").colSpan = editar ? 7 : 6;
+      crearCelda(fila, "No hay productos que coincidan con los filtros.").colSpan = editar ? 11 : 10;
       cuerpoInventario.append(fila);
     }
   }
@@ -141,6 +156,12 @@
     if (!puedeEditar()) return;
     productoEnEdicion = producto ? producto.id : null;
     formularioProducto.reset();
+    buscarElemento("errorFormulario").textContent = "";
+    buscarElemento("unidad").value = producto?.unidad ?? "";
+    buscarElemento("codigo").value = producto?.codigo ?? "";
+    buscarElemento("compra").value = producto?.compra ?? "";
+    buscarElemento("venta").value = producto?.venta ?? "";
+
     buscarElemento("tituloDialogo").textContent = producto ? "Editar producto" : "Nuevo producto";
     campoNombre.value = producto?.nombre ?? "";
     campoCategoria.value = producto?.categoria ?? "";
@@ -151,24 +172,33 @@
     dialogoProducto.showModal();
     campoNombre.focus();
   }
-  formularioProducto.addEventListener("submit", evento => {
+  formularioProducto.addEventListener("submit", async evento => {
     evento.preventDefault();
     if (!puedeEditar()) return;
     campoNombre.setCustomValidity(campoNombre.value.trim() ? "" : "Escribe el nombre.");
     campoCategoria.setCustomValidity(campoCategoria.value.trim() ? "" : "Escribe la categoría.");
     if (!formularioProducto.reportValidity()) return;
     const producto = {
-      id: productoEnEdicion ?? crypto.randomUUID(),
+      unidad: buscarElemento("unidad").value.trim() || null,
+      codigo: buscarElemento("codigo").value.trim() || null,
+      compra: buscarElemento("compra").value.trim() || null,
+      venta: buscarElemento("venta").value.trim() || null,
       nombre: campoNombre.value.trim(), categoria: campoCategoria.value.trim(),
       stock: Number(campoStock.value), minimo: Number(campoMinimo.value)
     };
-    if (!productoValido(producto)) return;
-    const nuevaLista = productoEnEdicion
-      ? productos.map(p => p.id === productoEnEdicion ? producto : p)
-      : [...productos, producto];
-    if (guardarProductos(nuevaLista)) {
+    const guardar = buscarElemento("botonGuardar");
+    if (guardar.disabled) return;
+    guardar.disabled = true;
+    botonCancelar.disabled = true;
+    try {
+      await solicitud(productoEnEdicion ? "PUT" : "POST", productoEnEdicion, producto);
       dialogoProducto.close();
-      mensajeEstado.textContent = "Producto guardado.";
+      await refrescar("Producto guardado.");
+    } catch (error) {
+      buscarElemento("errorFormulario").textContent = error.message;
+    } finally {
+      guardar.disabled = false;
+      botonCancelar.disabled = false;
     }
   });
   [campoNombre, campoCategoria].forEach(campo => campo.addEventListener("input", () => campo.setCustomValidity("")));
@@ -176,10 +206,8 @@
   botonCancelar.addEventListener("click", () => dialogoProducto.close());
   campoBuscar.addEventListener("input", dibujarInventario);
   selectorCategoria.addEventListener("change", dibujarInventario);
-  window.addEventListener("storage", () => {
-    try { productos=datosImperio.leer().productos; dialogoProducto.close(); actualizarCategorias(); dibujarInventario(); }
-    catch (error) { mensajeEstado.textContent=error.message; }
+  dialogoProducto.addEventListener("cancel", evento => {
+    if (buscarElemento("botonGuardar").disabled) evento.preventDefault();
   });
-  actualizarCategorias();
-  dibujarInventario();
+  await refrescar();
 })();

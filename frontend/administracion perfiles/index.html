@@ -1,7 +1,33 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Perfiles | Imperio</title><link rel="stylesheet" href="estilos.css">
-<script src="../compartido/sesion.js" defer></script><script src="../compartido/datos.js" defer></script>
-<script src="../compartido/navegacion.js" defer></script><script src="script.js" defer></script>
-</head><body data-modulo="perfiles"><aside class="barraLateral"></aside><main><header><h1>Perfiles</h1></header>
-<section class="tarjeta"><h2>Módulo pendiente de integración</h2><p>El acceso a Perfiles ya está conectado. Aquí se añadirá la interfaz del módulo.</p><a href="../entrada%20y%20salida%20de%20insumos/index.html">Volver a Movimientos</a></section></main></body></html>
+<html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración de perfiles | Imperio</title>
+<link rel="stylesheet" href="estilos.css">
+<script src="../compartido/sesion.js" defer></script>
+<script src="../compartido/navegacion.js" defer></script>
+<script src="servicio.js" defer></script><script src="script.js" defer></script>
+</head><body data-modulo="perfiles"><aside class="barraLateral"></aside>
+<main>
+<header><h1>Administración de perfiles</h1><button id="botonNuevoUsuario" class="botonNuevo">+ Nuevo usuario</button></header>
+<div class="contenedorTabla"><table><caption class="soloLectores">Usuarios del sistema</caption>
+<thead><tr><th scope="col">Nombre</th><th scope="col">Correo</th><th scope="col">Rol</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
+<tbody id="cuerpoUsuarios"><tr><td colspan="5">Cargando usuarios…</td></tr></tbody></table></div>
+<p id="mensajeEstado" role="status" aria-live="polite"></p>
+<div class="paneles">
+<section class="tarjeta"><form id="formularioUsuario">
+<h2 id="tituloFormulario">Nuevo usuario</h2>
+<div class="campos">
+<div><label for="campoNombre">Nombre</label><input id="campoNombre" name="nombre" required maxlength="100" autocomplete="off"></div>
+<div><label for="campoContrasena">Contraseña</label><input id="campoContrasena" name="contrasena" type="password" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="ayudaContrasena"></div>
+<div><label for="selectorRol">Rol</label><select id="selectorRol" name="rol"><option value="empleado">Empleado</option><option value="duena">Dueña</option></select></div>
+<div><label for="campoCorreo">Correo</label><input id="campoCorreo" name="correo" type="email" required maxlength="100" autocomplete="off"></div>
+<div><label for="selectorEstado">Estado</label><select id="selectorEstado" name="estado"><option value="activo">Activo</option><option value="baja">Baja</option></select></div>
+</div>
+<p id="ayudaContrasena" class="ayuda">Contraseña de 8 a 128 caracteres.</p>
+<div class="accionesFormulario"><button id="botonGuardarUsuario" class="botonGuardar" type="submit">Guardar usuario</button><button id="botonCancelarEdicion" type="button" hidden>Cancelar edición</button></div>
+</form></section>
+<section class="tarjeta permisos"><h2>Permisos por rol</h2>
+<p><strong>Dueña:</strong> Inventario (ver y editar), Movimientos, Mermas, Corte de caja, Reportes, Usuarios y Finanzas.</p>
+<p><strong>Empleado:</strong> Inventario (solo ver), Movimientos, Mermas y Corte de caja.</p>
+</section></div>
+</main></body></html>
