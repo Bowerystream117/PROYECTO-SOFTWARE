@@ -15,11 +15,3 @@ INSERT INTO roles (nombre,descripcion)
 SELECT 'Dueña','La dueña del local' WHERE NOT EXISTS (SELECT 1 FROM roles WHERE nombre='Dueña');
 INSERT INTO roles (nombre,descripcion)
 SELECT 'Empleado','Empleado General de la Tienda' WHERE NOT EXISTS (SELECT 1 FROM roles WHERE nombre='Empleado');
-
-INSERT INTO usuarios (id_rol,nombre,correo,password_hash)
-SELECT id_rol,'Monica Muñoz','Monica@Correo.com','A123456@' FROM roles
-WHERE nombre='Dueña' AND NOT EXISTS (SELECT 1 FROM usuarios WHERE correo='Monica@Correo.com') LIMIT 1;
-
-INSERT INTO usuarios (id_rol,nombre,correo,password_hash)
-SELECT id_rol,'Javier Lopez','Javier@Correo.com','A123456@' FROM roles
-WHERE nombre='Empleado' AND NOT EXISTS (SELECT 1 FROM usuarios WHERE correo='Javier@Correo.com') LIMIT 1;

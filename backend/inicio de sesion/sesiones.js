@@ -43,6 +43,7 @@ export async function exigirSesion(req, res, next) {
     const rol = filas[0]?.nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     if (!["duena", "empleado"].includes(rol)) return res.status(403).json({ mensaje: "Se requiere una cuenta activa de dueña o empleado." });
     req.idUsuario = sesion.id;
+    req.rol = rol;
     next();
   } catch (error) { next(error); }
 }

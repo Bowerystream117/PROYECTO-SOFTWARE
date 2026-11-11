@@ -1,7 +1,7 @@
 import { Router } from "express";
 import conexion from "../Conexion BaseDatos/conexion.js";
 import { exigirSesion } from "../inicio de sesion/sesiones.js";
-import { registrarMovimiento } from "./servicio.js";
+import { formatearMovimiento, registrarMovimiento } from "./servicio.js";
 
 const rutas = Router();
 rutas.use(exigirSesion);
@@ -14,13 +14,7 @@ rutas.get("/", async (_req, res, next) => {
        p.nombre AS producto, p.unidad_medida AS unidad, u.nombre AS usuario
        FROM movimientos_inventario m JOIN productos p ON p.id_producto=m.id_producto
        JOIN usuarios u ON u.id_usuario=m.id_usuario ORDER BY m.id_movimiento DESC LIMIT 200`);
-    res.set("Cache-Control", "no-store").json(filas.map(fila => {
-      let nota;
-      try { nota = JSON.parse(fila.observaciones); } catch {}
-      return nota?.formato === "imperio-movimiento-v1"
-        ? { ...fila, detalle: nota.detalle, observaciones: nota.observaciones, producto: nota.producto, unidad: nota.unidad }
-        : { ...fila, detalle: "—" };
-    }));
+    res.set("Cache-Control", "no-store").json(filas.map(formatearMovimiento));
   } catch (error) { next(error); }
 });
 rutas.post("/", async (req, res) => {
