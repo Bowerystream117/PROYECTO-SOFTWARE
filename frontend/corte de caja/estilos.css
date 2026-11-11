@@ -6,7 +6,7 @@ header { margin-bottom:14px; }
 .grupoEmpleado { margin-bottom:14px; }
 .grupoEmpleado label { display:block; font-size:14px; margin-bottom:5px; }
 .grupoEmpleado select { width:280px; max-width:100%; background:white; padding:10px 12px; font-size:14px; }
-.indicadores { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:15px; margin-bottom:14px; }
+.indicadores { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; margin-bottom:14px; }
 .indicador { background:white; border:1px solid #e8e2d7; border-radius:10px; padding:14px; }
 .indicador h2 { font-size:13px; line-height:1.4; font-weight:400; color:#716b63; margin:0 0 6px; }
 .indicador p { font-size:24px; font-weight:700; margin:0; overflow-wrap:anywhere; }
@@ -23,3 +23,12 @@ header { margin-bottom:14px; }
 @media(max-width:1050px) { .indicadores { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media(max-width:620px) { .indicadores { grid-template-columns:repeat(2,minmax(0,1fr)); } header { flex-direction:row; align-items:center; } table { min-width:520px; } }
 @media(max-width:360px) { .indicadores { grid-template-columns:1fr; } }
+.camposCaja {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px;}
+#formularioCorte {background:white;border:1px solid #e8e2d7;border-radius:12px;padding:22px;margin-bottom:24px;}
+#formularioCorte label {display:flex;flex-direction:column;gap:8px;}
+#formularioCorte input,#formularioCorte textarea {box-sizing:border-box;width:100%;padding:12px;border:1px solid #bdb7ae;border-radius:8px;font:inherit;}
+.notaCaja {font-size:14px;color:#645d54;line-height:1.5;}
+.contenedorTabla {overflow-x:auto;} table {min-width:1000px;}
+#confirmacion {max-width:480px;border:1px solid #e8e2d7;border-radius:12px;padding:24px;}
+#confirmacion::backdrop {background:#0007;}
+@media(max-width:620px){.camposCaja{grid-template-columns:1fr;} .indicadores{grid-template-columns:1fr;} #formularioCorte{padding:15px;}}

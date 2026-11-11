@@ -1,1 +1,4 @@
 @import url("../compartido/modulos.css");
+.panel {background:white;padding:22px;border:1px solid #e8e2d7;border-radius:12px;margin:24px 0;}
+.panel p {line-height:1.5;} #formCorte button {margin-top:15px;} [hidden] {display:none!important;}
+.error,#errorDialogo {color:#a1250b;} #historial td {overflow-wrap:anywhere;} #dialogo {max-width:680px;width:90%;box-sizing:border-box;}

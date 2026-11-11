@@ -1,4 +1,6 @@
-import rutasMovimientos from "./movimientos/rutas.js";
+import rutasFinanzas from "./gestion de cuentas financieras/rutas.js";
+import rutasCaja from "./corte de caja/rutas.js";
+import rutasEntradasSalidas from "./entrada y salida de insumos/rutas.js";
 import rutasUsuarios from "./administracion perfiles/rutas.js";
 import express from "express";
 import { fileURLToPath } from "node:url";
@@ -11,7 +13,11 @@ const puerto = Number(process.env.PORT || 3000);
 
 app.use(express.json({ limit: "4kb" }));
 
-app.use("/api/movimientos", rutasMovimientos);
+app.use("/api/entradas-salidas", rutasEntradasSalidas);
+// Compatibilidad con páginas anteriores.
+app.use("/api/movimientos", rutasEntradasSalidas);
+app.use("/api/caja", rutasCaja);
+app.use("/api/finanzas", rutasFinanzas);
 app.use("/api/usuarios", rutasUsuarios);
 app.use("/api", rutasInicioSesion);
 app.use("/api/inventario", rutasInventario );
