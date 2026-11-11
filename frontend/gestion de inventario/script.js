@@ -166,6 +166,10 @@
     campoNombre.value = producto?.nombre ?? "";
     campoCategoria.value = producto?.categoria ?? "";
     campoStock.value = producto?.stock ?? "";
+    campoStock.disabled = Boolean(producto);
+    buscarElemento("etiquetaStock").textContent = producto
+      ? "Stock actual (se ajusta en Entradas y Salidas)"
+      : "Stock inicial";
     campoMinimo.value = producto?.minimo ?? "";
     campoNombre.setCustomValidity("");
     campoCategoria.setCustomValidity("");
@@ -184,8 +188,9 @@
       compra: buscarElemento("compra").value.trim() || null,
       venta: buscarElemento("venta").value.trim() || null,
       nombre: campoNombre.value.trim(), categoria: campoCategoria.value.trim(),
-      stock: Number(campoStock.value), minimo: Number(campoMinimo.value)
+      minimo: Number(campoMinimo.value)
     };
+    if (!productoEnEdicion) producto.stock = Number(campoStock.value);
     const guardar = buscarElemento("botonGuardar");
     if (guardar.disabled) return;
     guardar.disabled = true;

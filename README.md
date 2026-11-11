@@ -30,7 +30,9 @@ El proyecto se encuentra organizado en las siguientes carpetas y módulos princi
   - `package.json`
   - `server.js`
 - **`baseDeDatos/`**
-  - `script_base_datos.sql`
+  - `ScriptBaseDatos.sql`
+  - `ActualizarFinanzas.sql`
+  - `InicioSesion.sql`
 - **`frontend/`**
   - `administracion perfiles`
   - `compartido`
@@ -41,6 +43,14 @@ El proyecto se encuentra organizado en las siguientes carpetas y módulos princi
   - `inicio de sesion`
   - `productos no aptos`
   - `reporte de insumos, mermas y desperdicios`
+
+## Actualizar MySQL para usar Finanzas
+
+Si `mydb` ya contiene datos, ejecuta únicamente `baseDeDatos/ActualizarFinanzas.sql` desde Workbench con una cuenta que tenga permiso para crear tablas. La migración se puede ejecutar de nuevo y conserva los usuarios, productos, movimientos y cortes existentes.
+
+Para una instalación con una base vacía, ejecuta primero `baseDeDatos/ScriptBaseDatos.sql` y después `baseDeDatos/ActualizarFinanzas.sql`. Reserva `ScriptBaseDatos.sql` para bases vacías, ya que elimina y recrea las tablas principales.
+
+El stock inicial se captura al crear un producto. Usa Entradas y Salidas para cambiar las existencias de un producto que ya está registrado.
 
 ##  MÓDULOS PRINCIPALES DEL SISTEMA
 1. **Inicio de Sesión y Perfiles:** Autenticación segura de usuarios y administración de roles (Dueña / Empleado).

@@ -35,9 +35,10 @@ export async function modificarInventario(req, res) {
     const valores = [
       texto(p.nombre, 100, "nombre"), texto(p.unidad, 20, "unidad"),
       texto(p.codigo, 50, "código de barras", true),
-      decimal(p.stock, "el stock actual"), decimal(p.minimo, "el stock mínimo"),
+      decimal(p.minimo, "el stock mínimo"),
       decimal(p.compra, "el precio de compra", true), decimal(p.venta, "el precio de venta", true)
     ];
+    const stockInicial = id ? null : decimal(p.stock, "el stock inicial");
     db = await conexion.getConnection();
     await db.beginTransaction();
     const [categorias] = await db.execute("SELECT id_categoria FROM categorias WHERE nombre = ? ORDER BY id_categoria LIMIT 1 FOR UPDATE", [categoria]);
@@ -49,12 +50,13 @@ export async function modificarInventario(req, res) {
     valores.push(categoriaId);
     if (id) {
       const [resultado] = await db.execute(
-        "UPDATE productos SET nombre=?, unidad_medida=?, codigo_barras=?, stock_actual=?, stock_minimo=?, precio_compra=?, precio_venta=?, id_categoria=? WHERE id_producto=?",
+        "UPDATE productos SET nombre=?, unidad_medida=?, codigo_barras=?, stock_minimo=?, precio_compra=?, precio_venta=?, id_categoria=? WHERE id_producto=?",
         [...valores, id]);
       if (!resultado.affectedRows) throw errorSolicitud("El producto ya no existe.", 404);
     } else {
       await db.execute(
-        "INSERT INTO productos (nombre, unidad_medida, codigo_barras, stock_actual, stock_minimo, precio_compra, precio_venta, id_categoria) VALUES (?,?,?,?,?,?,?,?)", valores);
+        "INSERT INTO productos (nombre, unidad_medida, codigo_barras, stock_minimo, precio_compra, precio_venta, id_categoria, stock_actual) VALUES (?,?,?,?,?,?,?,?)",
+        [...valores, stockInicial]);
     }
     await db.commit();
     return res.status(id ? 200 : 201).json({ mensaje: "Producto guardado." });
