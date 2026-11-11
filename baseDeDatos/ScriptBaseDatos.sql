@@ -222,7 +222,6 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,1,'Monica Muñoz','Monica@Correo.com','A123456@',1,'2026-10-30 16:42:29'),(2,2,'Javier Lopez','Javier@Correo.com','A123456@',1,'2026-10-30 16:42:29');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

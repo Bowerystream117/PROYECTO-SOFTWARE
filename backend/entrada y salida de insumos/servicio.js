@@ -9,6 +9,25 @@ export function centesimas(valor) {
 }
 const decimal = valor => (valor / 100).toFixed(2);
 
+export function fechaValida(fecha) {
+  return typeof fecha === "string" && /^\d{4}-\d{2}-\d{2}$/.test(fecha) &&
+    fecha >= "1000-01-01" && Number.isFinite(Date.parse(fecha)) &&
+    new Date(fecha).toISOString().slice(0, 10) === fecha;
+}
+
+export function validarFechaMovimiento(fecha) {
+  const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" });
+  if (!fechaValida(fecha) || fecha > hoy) throw fallo("Selecciona una fecha válida que no sea futura.");
+}
+
+export function formatearMovimiento(fila) {
+  let nota;
+  try { nota = JSON.parse(fila.observaciones); } catch {}
+  return nota?.formato === "imperio-movimiento-v1"
+    ? { ...fila, detalle: nota.detalle, observaciones: nota.observaciones, producto: nota.producto, unidad: nota.unidad }
+    : { ...fila, detalle: "—" };
+}
+
 export async function registrarMovimiento(pool, datos, idUsuario) {
   const { productoId, tipo, cantidad, fecha } = datos;
   if (!/^[1-9]\d{0,9}$/.test(String(productoId))) throw fallo("Selecciona un producto registrado.");
@@ -18,12 +37,7 @@ export async function registrarMovimiento(pool, datos, idUsuario) {
   const detalle = typeof datos.detalle === "string" ? datos.detalle.trim() : "";
   const observaciones = typeof datos.observaciones === "string" ? datos.observaciones.trim() : "";
   if (!detalle || detalle.length > 120 || observaciones.length > 300) throw fallo("Revisa el proveedor, motivo y las observaciones.");
-  const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" });
-  if (typeof fecha !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(fecha) ||
-      Number(fecha.slice(0, 4)) < 1000 || isNaN(Date.parse(fecha)) ||
-      new Date(fecha).toISOString().slice(0, 10) !== fecha || fecha > hoy) {
-    throw fallo("Selecciona una fecha válida que no sea futura.");
-  }
+  validarFechaMovimiento(fecha);
   const db = await pool.getConnection();
   try {
     await db.beginTransaction();
