@@ -1,55 +1,44 @@
 :root {
-  --marfil: #fffcf5;
+  --marfil: #fbf6ec;
+  --crema: #f0e5d0;
   --carbon: #211d18;
   --bronce: #785712;
-  --oro: #c6a45b;
-  --borde: #ded5c7;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  background: #f3eee5;
+  background: var(--marfil);
   color: var(--carbon);
   font-family: "Segoe UI", system-ui, sans-serif;
 }
 .pantalla {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.09fr) minmax(0, 1fr);
   min-height: 100vh;
   min-height: 100svh;
 }
 .panelMarca {
   display: grid;
   place-items: center;
-  padding: clamp(24px, 5vw, 78px);
-  background: radial-gradient(ellipse at 42% 24%, #493721, var(--carbon) 72%);
+  padding: clamp(24px, 6.5vw, 108px);
+  background: radial-gradient(ellipse at 48% 46%, #f9efdb 0%, var(--crema) 76%);
 }
 .identidad {
-  width: min(100%, 660px);
-  padding: clamp(28px, 5vw, 76px) clamp(20px, 4vw, 60px);
-  background: var(--marfil);
-  border: 1px solid var(--oro);
-  outline: 1px solid #c6a45b80;
-  outline-offset: 8px;
+  width: min(100%, 760px);
   text-align: center;
 }
-.logo { display: block; width: 100%; height: auto; }
+.logo { display: block; width: 100%; height: auto; mix-blend-mode: darken; }
 .descripcionSistema {
-  margin: 23px 0 0;
+  margin: clamp(14px, 2vw, 28px) 0 0;
   color: var(--bronce);
   font-size: .76rem;
   font-weight: 700;
   letter-spacing: .2em;
   text-transform: uppercase;
 }
-.panelAcceso { display: grid; place-items: center; padding: clamp(24px, 5vw, 72px); }
+.panelAcceso { display: grid; place-items: center; padding: clamp(24px, 6vw, 104px); }
 .contenedorFormulario {
-  width: min(100%, 490px);
-  padding: clamp(24px, 4vw, 48px);
-  border: 1px solid var(--borde);
-  border-radius: 20px;
-  background: var(--marfil);
-  box-shadow: 0 22px 64px #36271910;
+  width: min(100%, 450px);
 }
 h1 { margin: 0; font-size: clamp(2.1rem, 3.5vw, 3rem); letter-spacing: -.05em; line-height: 1.1; }
 .introduccion { margin: 12px 0 30px; line-height: 1.55; color: #645b50; }
@@ -79,18 +68,18 @@ input {
 input:focus-visible, button:focus-visible { outline: 3px solid var(--bronce); outline-offset: 3px; }
 .acciones { display: flex; flex-wrap: wrap; gap: 10px; }
 .boton { min-height: 49px; padding: 11px 16px; border-radius: 9px; font: inherit; cursor: pointer; }
-.botonIniciar { flex: 1 0 max-content; border: 1px solid var(--carbon); background: var(--carbon); color: white; font-weight: 700; }
+.botonIniciar { flex: 1 0 max-content; border: 1px solid var(--carbon); background: var(--carbon); color: white; font-weight: 700; box-shadow: 0 5px 12px #32241924; }
 .botonIniciar:hover { background: #463722; }
 .botonIniciar:disabled { opacity: .65; cursor: wait; }
-.botonCancelar { border: 1px solid var(--borde); background: transparent; color: var(--carbon); }
+.botonCancelar { border: 1px solid transparent; background: transparent; color: #645446; }
 .botonCancelar:hover { background: #f3eee5; }
 .mensajeEstado { margin: 14px 0 0; font-size: .9rem; line-height: 1.45; }
 .mensajeEstado:empty { display: none; }
 .mensajeEstado.error { color: #962e1d; }
 @media (max-width: 760px) {
   .pantalla { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .panelMarca { padding: 30px; }
-  .identidad { width: min(100%, 450px); padding: 20px 24px; }
+  .panelMarca { padding: 32px 28px 26px; }
+  .identidad { width: min(100%, 380px); }
   .descripcionSistema { margin-top: 12px; }
-  .panelAcceso { align-items: start; }
+  .panelAcceso { align-items: start; padding: 32px 24px; }
 }
