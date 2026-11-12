@@ -13,7 +13,7 @@
     const producto=productos.find(item=>item.id===selector.value);
     const unidad=producto?.unidad || "";
     // Solo la unidad del inventario: cambiar kg a piezas sin conversión dañaría el stock.
-    elemento("unidad").replaceChildren(new Option(unidad,unidad));
+    elemento("unidad").value=unidad;
     elemento("disponible").textContent=producto?`Disponible: ${producto.stock} ${unidad}`:"No hay productos registrados.";
     formulario.querySelector('[type="submit"]').disabled=!producto || guardando;
   }

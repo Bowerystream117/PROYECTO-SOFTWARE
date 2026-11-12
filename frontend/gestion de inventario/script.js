@@ -16,6 +16,8 @@
   const formularioProducto = buscarElemento("formularioProducto");
   const campoNombre = buscarElemento("campoNombre");
   const campoCategoria = buscarElemento("campoCategoria");
+  const nombreNuevaCategoria = buscarElemento("nombreNuevaCategoria");
+  const campoUnidad = buscarElemento("unidad");
   const campoStock = buscarElemento("campoStock");
   const campoMinimo = buscarElemento("campoMinimo");
   const mensajeEstado = buscarElemento("mensajeEstado");
@@ -23,6 +25,7 @@
   const vistaEmpleado = sessionStorage.getItem("imperioVistaEmpleado") === "true";
   let productoEnEdicion = null;
   let productos = [];
+  const nuevaCategoriaValor = "__nueva_categoria__";
   async function solicitud(metodo, id, producto) {
     const ruta = "/api/inventario" + (id ? "/" + encodeURIComponent(id) : "");
     const respuesta = await fetch(ruta, {
@@ -152,19 +155,40 @@
       cuerpoInventario.append(fila);
     }
   }
-  function abrirFormulario(producto = null) {
+  function mostrarNuevaCategoria() {
+    const nueva = campoCategoria.value === nuevaCategoriaValor;
+    buscarElemento("nuevaCategoria").hidden = !nueva;
+    nombreNuevaCategoria.disabled = !nueva;
+    nombreNuevaCategoria.required = nueva;
+    nombreNuevaCategoria.setCustomValidity("");
+  }
+  async function abrirFormulario(producto = null) {
     if (!puedeEditar()) return;
+    let opciones;
+    try { opciones = await solicitud("GET", "opciones"); }
+    catch (error) { mensajeEstado.textContent = error.message; return; }
+    if (dialogoProducto.open) return;
     productoEnEdicion = producto ? producto.id : null;
     formularioProducto.reset();
     buscarElemento("errorFormulario").textContent = "";
-    buscarElemento("unidad").value = producto?.unidad ?? "";
+    const unidades = [...new Set([...opciones.unidades, ...(producto?.unidad ? [producto.unidad] : [])])];
+    campoUnidad.replaceChildren(new Option("Selecciona una unidad", ""), ...unidades.map(u => new Option(u, u)));
+    campoUnidad.value = producto?.unidad ?? "";
+    campoUnidad.disabled = Boolean(producto && producto.stock !== 0);
+    buscarElemento("etiquetaUnidad").textContent = campoUnidad.disabled
+      ? "Unidad de medida (se cambia con stock en cero)"
+      : "Unidad de medida";
     buscarElemento("codigo").value = producto?.codigo ?? "";
     buscarElemento("compra").value = producto?.compra ?? "";
     buscarElemento("venta").value = producto?.venta ?? "";
 
     buscarElemento("tituloDialogo").textContent = producto ? "Editar producto" : "Nuevo producto";
     campoNombre.value = producto?.nombre ?? "";
+    const categorias = [...new Set(["Mariscos", "Clamatos", "Repostería", ...opciones.categorias])].sort();
+    campoCategoria.replaceChildren(new Option("Selecciona una categoría", ""),
+      ...categorias.map(c => new Option(c, c)), new Option("Agregar categoría…", nuevaCategoriaValor));
     campoCategoria.value = producto?.categoria ?? "";
+    mostrarNuevaCategoria();
     campoStock.value = producto?.stock ?? "";
     campoStock.disabled = Boolean(producto);
     buscarElemento("etiquetaStock").textContent = producto
@@ -172,7 +196,6 @@
       : "Stock inicial";
     campoMinimo.value = producto?.minimo ?? "";
     campoNombre.setCustomValidity("");
-    campoCategoria.setCustomValidity("");
     dialogoProducto.showModal();
     campoNombre.focus();
   }
@@ -180,14 +203,15 @@
     evento.preventDefault();
     if (!puedeEditar()) return;
     campoNombre.setCustomValidity(campoNombre.value.trim() ? "" : "Escribe el nombre.");
-    campoCategoria.setCustomValidity(campoCategoria.value.trim() ? "" : "Escribe la categoría.");
+    const categoria = campoCategoria.value === nuevaCategoriaValor ? nombreNuevaCategoria.value.trim() : campoCategoria.value;
+    nombreNuevaCategoria.setCustomValidity(categoria ? "" : "Escribe la categoría.");
     if (!formularioProducto.reportValidity()) return;
     const producto = {
-      unidad: buscarElemento("unidad").value.trim() || null,
+      unidad: campoUnidad.value,
       codigo: buscarElemento("codigo").value.trim() || null,
       compra: buscarElemento("compra").value.trim() || null,
       venta: buscarElemento("venta").value.trim() || null,
-      nombre: campoNombre.value.trim(), categoria: campoCategoria.value.trim(),
+      nombre: campoNombre.value.trim(), categoria,
       minimo: Number(campoMinimo.value)
     };
     if (!productoEnEdicion) producto.stock = Number(campoStock.value);
@@ -206,7 +230,8 @@
       botonCancelar.disabled = false;
     }
   });
-  [campoNombre, campoCategoria].forEach(campo => campo.addEventListener("input", () => campo.setCustomValidity("")));
+  [campoNombre, nombreNuevaCategoria].forEach(campo => campo.addEventListener("input", () => campo.setCustomValidity("")));
+  campoCategoria.addEventListener("change", mostrarNuevaCategoria);
   botonNuevoProducto.addEventListener("click", () => abrirFormulario());
   botonCancelar.addEventListener("click", () => dialogoProducto.close());
   campoBuscar.addEventListener("input", dibujarInventario);
