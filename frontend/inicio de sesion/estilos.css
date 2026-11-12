@@ -12,6 +12,7 @@ body {
   font-family: "Segoe UI", system-ui, sans-serif;
 }
 .pantalla {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.09fr) minmax(0, 1fr);
   min-height: 100vh;
@@ -24,7 +25,7 @@ body {
   padding: clamp(24px, 6.5vw, 108px);
   background: radial-gradient(ellipse at 48% 46%, #f9efdb 0%, var(--crema) 76%);
 }
-.panelMarca::before, .panelAcceso::before {
+.pantalla::before {
   content: "";
   position: absolute;
   inset: 18px;
@@ -32,6 +33,7 @@ body {
   border-radius: 24px;
   box-shadow: inset 0 1px 0 #fff9ecb3;
   pointer-events: none;
+  z-index: 2;
 }
 .identidad {
   width: min(100%, 760px);
@@ -48,16 +50,28 @@ body {
   pointer-events: none;
 }
 .marcaLogo::before {
-  filter: contrast(1.45) brightness(1.07) blur(3px);
-  opacity: .58;
-  transform: translate(3px, 8px);
+  filter: contrast(1.8) brightness(1.04) blur(3px);
+  opacity: .64;
+  transform: translate(3px, 9px);
 }
 .marcaLogo::after {
-  filter: contrast(1.65) brightness(1.05);
-  opacity: .66;
-  transform: translate(2px, 3px);
+  filter: contrast(2.1) brightness(1.02);
+  opacity: .82;
+  transform: translate(2px, 4px);
 }
 .logo { position: relative; z-index: 1; display: block; width: 100%; height: auto; mix-blend-mode: darken; }
+.brilloLogo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: url("../compartido/logo-imperio.png") center / 100% 100% no-repeat;
+  clip-path: inset(0 0 31%);
+  filter: invert(1) grayscale(1) contrast(2.5) brightness(3);
+  mix-blend-mode: screen;
+  opacity: .48;
+  transform: translateY(-1px);
+  pointer-events: none;
+}
 .descripcionSistema {
   margin: clamp(14px, 2vw, 28px) 0 0;
   color: var(--bronce);
@@ -109,7 +123,7 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--bronce); ou
 @media (max-width: 760px) {
   .pantalla { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .panelMarca { padding: 32px 28px 26px; }
-  .panelMarca::before, .panelAcceso::before { inset: 10px; border-radius: 16px; }
+  .pantalla::before { inset: 10px; border-radius: 16px; }
   .identidad { width: min(100%, 380px); }
   .descripcionSistema { margin-top: 12px; }
   .panelAcceso { align-items: start; padding: 32px 24px; }
