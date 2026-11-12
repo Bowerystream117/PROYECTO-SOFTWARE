@@ -12,64 +12,35 @@ body {
   font-family: "Segoe UI", system-ui, sans-serif;
 }
 .pantalla {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.09fr) minmax(0, 1fr);
   min-height: 100vh;
   min-height: 100svh;
 }
 .panelMarca {
-  position: relative;
   display: grid;
   place-items: center;
   padding: clamp(24px, 6.5vw, 108px);
-  background: radial-gradient(ellipse at 48% 46%, #f9efdb 0%, var(--crema) 76%);
-}
-.pantalla::before {
-  content: "";
-  position: absolute;
-  inset: 18px;
-  border: 2px solid #96743c80;
-  border-radius: 24px;
-  box-shadow: inset 0 1px 0 #fff9ecb3;
-  pointer-events: none;
-  z-index: 2;
+  background: radial-gradient(ellipse at 34% 32%, #fff7e6 0%, #f8eedb 35%, var(--crema) 80%);
 }
 .identidad {
   width: min(100%, 760px);
   text-align: center;
 }
-.marcaLogo {
-  display: grid;
-  margin: 0;
-  font: 700 clamp(38px, 7vw, 136px) / 1.08 Georgia, "Times New Roman", serif;
-  letter-spacing: .035em;
+.marcaLogo { position: relative; }
+.marcaLogo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../compartido/logo-imperio.png") center / 100% 100% no-repeat;
+  clip-path: inset(0 0 28%);
+  filter: grayscale(1) contrast(1.3) brightness(1.06) blur(3px);
+  mix-blend-mode: darken;
+  opacity: .37;
+  transform: translate(2px, 5px);
+  pointer-events: none;
 }
-.marcaLogo span { grid-area: 1 / 1; }
-.marcaLogo [aria-hidden] {
-  color: #88531d;
-  text-shadow:
-    1px 1px #ab732f, 2px 2px #976025, 3px 3px #88531d,
-    4px 4px #7c4918, 5px 5px #704016, 6px 6px #653912,
-    7px 7px #593211, 9px 11px 10px #5a351060, 12px 17px 22px #5a351040;
-  user-select: none;
-}
-.caraLogo {
-  color: #a36b28;
-  background: linear-gradient(#8a511f 12%, #e7be6c 29%, #fff0ba 42%, #bd8133 49%, #9d6326 62%, #edc679 81%, #ffdfa0 93%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .65px #a77235;
-  filter: drop-shadow(0 -1px #fff8dc);
-}
-.giroMarca {
-  margin: 16px 0 0;
-  color: #6c4d2f;
-  font-size: clamp(.83rem, 1.35vw, 1.35rem);
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
+.logo { position: relative; display: block; width: 100%; height: auto; mix-blend-mode: darken; }
 .descripcionSistema {
   margin: clamp(14px, 2vw, 28px) 0 0;
   color: var(--bronce);
@@ -78,7 +49,7 @@ body {
   letter-spacing: .2em;
   text-transform: uppercase;
 }
-.panelAcceso { position: relative; display: grid; place-items: center; padding: clamp(36px, 6vw, 104px); }
+.panelAcceso { display: grid; place-items: center; padding: clamp(36px, 6vw, 104px); }
 .contenedorFormulario {
   width: min(100%, 450px);
 }
@@ -121,9 +92,7 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--bronce); ou
 @media (max-width: 760px) {
   .pantalla { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .panelMarca { padding: 32px 28px 26px; }
-  .pantalla::before { inset: 10px; border-radius: 16px; }
   .identidad { width: min(100%, 380px); }
-  .marcaLogo { font-size: clamp(32px, 11vw, 70px); }
   .descripcionSistema { margin-top: 12px; }
   .panelAcceso { align-items: start; padding: 32px 24px; }
 }
