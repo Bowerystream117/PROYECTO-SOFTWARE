@@ -1,17 +1,18 @@
-:root { --fondo: #f8f5ef; --panel: #eee8dc; --texto: #292521; --rojo: #ce370e; --amarillo: #f7b52c; }
+:root { --fondo: #f8f5ef; --panel: #eee8dc; --texto: #292521; --rojo: #aa391f; --amarillo: #f5ce78; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { margin: 0; background: var(--fondo); color: var(--texto); font-family: Arial, sans-serif; display: flex; min-height: 100vh; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font-family: "Segoe UI", system-ui, sans-serif; display: flex; height: 100vh; height: 100dvh; overflow: hidden; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #a64b2d; outline-offset: 3px; }
-.barraLateral { width: 222px; flex-shrink: 0; background: var(--panel); padding: 26px 14px; display: flex; flex-direction: column; min-height: 100vh; }
-.marca { font-weight: bold; letter-spacing: 4px; font-size: 20px; margin: 0 10px 22px; }
-.opcion { display: block; width: 100%; border: 0; background: transparent; text-align: left; padding: 11px; border-radius: 8px; color: var(--texto); font-size: 14px; }
-.opcion:hover { background: #ded7cb; }
-.opcion.activa { background: var(--texto); color: white; font-weight: bold; }
-.pieMenu { margin-top: auto; padding-top: 70px; }
-main { padding: 26px 32px; flex: 1; min-width: 0; }
+.barraLateral { width: 222px; flex-shrink: 0; background: #262019; padding: 26px 14px; display: flex; flex-direction: column; overflow-y: auto; }
+.marca { font-weight: 700; letter-spacing: .18em; font-size: 20px; margin: 0 10px 22px; color: #ebcd8b; }
+.opcion { display: block; width: 100%; border: 0; background: transparent; text-align: left; padding: 11px; border-radius: 8px; color: #f6eee0; font-size: 14px; }
+.opcion:hover { background: #43372a; }
+.opcion.activa { background: #ead4a4; color: #2e2113; font-weight: 700; }
+.opcion:focus-visible { outline: 2px solid #ebcd8b; outline-offset: -2px; }
+.pieMenu { margin-top: auto; padding-top: 30px; }
+main { padding: 26px 32px; flex: 1; min-width: 0; min-height: 0; overflow: auto; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
 h1 { font-size: 28px; margin: 0; }
 .accionesCabecera { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -44,10 +45,18 @@ dialog input, dialog select { width: 100%; }
 .soloLectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 900px) { header { align-items: flex-start; flex-direction: column; } .barraLateral { width: 190px; } main { padding: 24px 20px; } }
 @media (max-width: 620px) {
-  body { flex-direction: column; } .barraLateral { width: 100%; min-height: auto; padding: 20px; }
-  nav, .pieMenu { display: flex; flex-wrap: wrap; gap: 5px; } .opcion { width: auto; }
-  .pieMenu { padding-top: 12px; } .filtros { flex-wrap: wrap; } h1 { font-size: 25px; }
+  body { flex-direction: column; } .barraLateral { width: 100%; max-height: 42dvh; padding: 16px; }
+  .barraLateral .marca { margin-bottom: 8px; }
+  .barraLateral nav { display: flex; flex: 0 0 auto; gap: 4px; overflow-x: auto; }
+  .barraLateral nav .opcion { flex: 0 0 auto; }
+  .pieMenu { display: flex; flex-wrap: wrap; gap: 5px; padding-top: 8px; }
+  .opcion { width: auto; white-space: nowrap; } .filtros { flex-wrap: wrap; } h1 { font-size: 25px; }
   table { min-width: 680px; }
 }
 
 a.opcion { text-decoration:none; }
+@media print {
+  body { display: block; height: auto; overflow: visible; }
+  .barraLateral { display: none; }
+  main { overflow: visible; }
+}
