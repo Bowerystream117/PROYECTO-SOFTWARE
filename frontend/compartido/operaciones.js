@@ -28,11 +28,17 @@ window.operacionesImperio = (() => {
     }));
   }
 
-  function reporte({ desde, hasta, tipo }, pagina = 1, porPagina = 25) {
+  async function reporte({ desde, hasta, tipo }, pagina = 1, porPagina = 25) {
     const filtros = new URLSearchParams({ tipo, pagina, porPagina });
     if (desde) filtros.set("desde", desde);
     if (hasta) filtros.set("hasta", hasta);
-    return solicitar("reportes?" + filtros);
+    const datos = await solicitar("reportes?" + filtros);
+    if (!datos?.resumen || !Array.isArray(datos.movimientos) ||
+        !Number.isInteger(datos.total) || !Number.isInteger(datos.pagina) ||
+        !Number.isInteger(datos.porPagina)) {
+      throw new Error("El servidor devolvió un formato de reporte incompatible. Reinicia Imperio y vuelve a cargar esta página.");
+    }
+    return datos;
   }
 
   return {
