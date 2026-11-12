@@ -24,11 +24,11 @@ body {
   padding: clamp(24px, 6.5vw, 108px);
   background: radial-gradient(ellipse at 48% 46%, #f9efdb 0%, var(--crema) 76%);
 }
-.panelMarca::before {
+.panelMarca::before, .panelAcceso::before {
   content: "";
   position: absolute;
   inset: 18px;
-  border: 1px solid #96743c66;
+  border: 2px solid #96743c80;
   border-radius: 24px;
   box-shadow: inset 0 1px 0 #fff9ecb3;
   pointer-events: none;
@@ -38,18 +38,26 @@ body {
   text-align: center;
 }
 .marcaLogo { position: relative; }
-.marcaLogo::before {
+.marcaLogo::before, .marcaLogo::after {
   content: "";
   position: absolute;
   inset: 0;
   background: url("../compartido/logo-imperio.png") center / 100% 100% no-repeat;
-  filter: brightness(1.06) blur(2px);
+  clip-path: inset(0 0 28%);
   mix-blend-mode: darken;
-  opacity: .5;
-  transform: translateY(4px);
   pointer-events: none;
 }
-.logo { position: relative; display: block; width: 100%; height: auto; mix-blend-mode: darken; }
+.marcaLogo::before {
+  filter: contrast(1.45) brightness(1.07) blur(3px);
+  opacity: .58;
+  transform: translate(3px, 8px);
+}
+.marcaLogo::after {
+  filter: contrast(1.65) brightness(1.05);
+  opacity: .66;
+  transform: translate(2px, 3px);
+}
+.logo { position: relative; z-index: 1; display: block; width: 100%; height: auto; mix-blend-mode: darken; }
 .descripcionSistema {
   margin: clamp(14px, 2vw, 28px) 0 0;
   color: var(--bronce);
@@ -58,7 +66,7 @@ body {
   letter-spacing: .2em;
   text-transform: uppercase;
 }
-.panelAcceso { display: grid; place-items: center; padding: clamp(24px, 6vw, 104px); }
+.panelAcceso { position: relative; display: grid; place-items: center; padding: clamp(36px, 6vw, 104px); }
 .contenedorFormulario {
   width: min(100%, 450px);
 }
@@ -101,7 +109,7 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--bronce); ou
 @media (max-width: 760px) {
   .pantalla { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
   .panelMarca { padding: 32px 28px 26px; }
-  .panelMarca::before { inset: 10px; border-radius: 16px; }
+  .panelMarca::before, .panelAcceso::before { inset: 10px; border-radius: 16px; }
   .identidad { width: min(100%, 380px); }
   .descripcionSistema { margin-top: 12px; }
   .panelAcceso { align-items: start; padding: 32px 24px; }
