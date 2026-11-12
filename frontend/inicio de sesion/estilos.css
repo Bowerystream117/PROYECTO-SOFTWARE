@@ -39,38 +39,36 @@ body {
   width: min(100%, 760px);
   text-align: center;
 }
-.marcaLogo { position: relative; }
-.marcaLogo::before, .marcaLogo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("../compartido/logo-imperio.png") center / 100% 100% no-repeat;
-  clip-path: inset(0 0 28%);
-  mix-blend-mode: darken;
-  pointer-events: none;
+.marcaLogo {
+  display: grid;
+  margin: 0;
+  font: 700 clamp(38px, 7vw, 136px) / 1.08 Georgia, "Times New Roman", serif;
+  letter-spacing: .035em;
 }
-.marcaLogo::before {
-  filter: contrast(1.8) brightness(1.04) blur(3px);
-  opacity: .64;
-  transform: translate(3px, 9px);
+.marcaLogo span { grid-area: 1 / 1; }
+.marcaLogo [aria-hidden] {
+  color: #88531d;
+  text-shadow:
+    1px 1px #ab732f, 2px 2px #976025, 3px 3px #88531d,
+    4px 4px #7c4918, 5px 5px #704016, 6px 6px #653912,
+    7px 7px #593211, 9px 11px 10px #5a351060, 12px 17px 22px #5a351040;
+  user-select: none;
 }
-.marcaLogo::after {
-  filter: contrast(2.1) brightness(1.02);
-  opacity: .82;
-  transform: translate(2px, 4px);
+.caraLogo {
+  color: #a36b28;
+  background: linear-gradient(#8a511f 12%, #e7be6c 29%, #fff0ba 42%, #bd8133 49%, #9d6326 62%, #edc679 81%, #ffdfa0 93%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: .65px #a77235;
+  filter: drop-shadow(0 -1px #fff8dc);
 }
-.logo { position: relative; z-index: 1; display: block; width: 100%; height: auto; mix-blend-mode: darken; }
-.brilloLogo {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: url("../compartido/logo-imperio.png") center / 100% 100% no-repeat;
-  clip-path: inset(0 0 31%);
-  filter: invert(1) grayscale(1) contrast(2.5) brightness(3);
-  mix-blend-mode: screen;
-  opacity: .48;
-  transform: translateY(-1px);
-  pointer-events: none;
+.giroMarca {
+  margin: 16px 0 0;
+  color: #6c4d2f;
+  font-size: clamp(.83rem, 1.35vw, 1.35rem);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 .descripcionSistema {
   margin: clamp(14px, 2vw, 28px) 0 0;
@@ -125,6 +123,7 @@ input:focus-visible, button:focus-visible { outline: 3px solid var(--bronce); ou
   .panelMarca { padding: 32px 28px 26px; }
   .pantalla::before { inset: 10px; border-radius: 16px; }
   .identidad { width: min(100%, 380px); }
+  .marcaLogo { font-size: clamp(32px, 11vw, 70px); }
   .descripcionSistema { margin-top: 12px; }
   .panelAcceso { align-items: start; padding: 32px 24px; }
 }
