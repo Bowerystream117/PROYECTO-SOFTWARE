@@ -39,7 +39,7 @@ dialog { border: 0; border-radius: 12px; padding: 26px; max-width: calc(100% - 3
 dialog::backdrop { background: #29252180; }
 dialog h2 { margin-top: 0; }
 dialog label { display: block; margin: 14px 0 6px; }
-dialog input { width: 100%; }
+dialog input, dialog select { width: 100%; }
 .accionesDialogo { display: flex; gap: 12px; margin-top: 22px; }
 .soloLectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 900px) { header { align-items: flex-start; flex-direction: column; } .barraLateral { width: 190px; } main { padding: 24px 20px; } }

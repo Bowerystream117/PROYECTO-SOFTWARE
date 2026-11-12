@@ -1,4 +1,5 @@
 import conexion from "../Conexion BaseDatos/conexion.js";
+import { unidades } from "./unidades.js";
 
 function errorSolicitud(mensaje, estado = 400) {
   return Object.assign(new Error(mensaje), { estado });
@@ -32,8 +33,9 @@ export async function modificarInventario(req, res) {
     }
     const p = req.body || {};
     const categoria = texto(p.categoria, 50, "categoría");
+    const unidad = texto(p.unidad, 20, "unidad");
     const valores = [
-      texto(p.nombre, 100, "nombre"), texto(p.unidad, 20, "unidad"),
+      texto(p.nombre, 100, "nombre"), unidad,
       texto(p.codigo, 50, "código de barras", true),
       decimal(p.minimo, "el stock mínimo"),
       decimal(p.compra, "el precio de compra", true), decimal(p.venta, "el precio de venta", true)
@@ -48,6 +50,19 @@ export async function modificarInventario(req, res) {
       categoriaId = nueva.insertId;
     }
     valores.push(categoriaId);
+    let actual;
+    if (id) {
+      [[actual]] = await db.execute(
+        "SELECT unidad_medida, stock_actual FROM productos WHERE id_producto = ? FOR UPDATE", [id]
+      );
+      if (!actual) throw errorSolicitud("El producto ya no existe.", 404);
+    }
+    if (!unidades.includes(unidad) && unidad !== actual?.unidad_medida) {
+      throw errorSolicitud("Selecciona una unidad de medida de la lista.");
+    }
+    if (actual && unidad !== actual.unidad_medida && Number(actual.stock_actual) !== 0) {
+      throw errorSolicitud("Para cambiar la unidad, las existencias deben estar en cero.", 409);
+    }
     if (id) {
       const [resultado] = await db.execute(
         "UPDATE productos SET nombre=?, unidad_medida=?, codigo_barras=?, stock_minimo=?, precio_compra=?, precio_venta=?, id_categoria=? WHERE id_producto=?",

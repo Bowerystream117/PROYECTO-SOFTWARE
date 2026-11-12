@@ -46,10 +46,13 @@
       <label for="campoNombre">Nombre</label>
       <input id="campoNombre" required maxlength="100" placeholder="Ej. Camarón">
       <label for="campoCategoria">Categoría</label>
-      <input id="campoCategoria" required maxlength="50" list="categoriasSugeridas">
-      <datalist id="categoriasSugeridas"><option value="Mariscos"><option value="Clamatos"><option value="Repostería"></datalist>
-      <label for="unidad">Unidad de medida</label>
-      <input id="unidad" required maxlength="20" placeholder="Ej. kg">
+      <select id="campoCategoria" required></select>
+      <div id="nuevaCategoria" hidden>
+        <label for="nombreNuevaCategoria">Nombre de la nueva categoría</label>
+        <input id="nombreNuevaCategoria" maxlength="50" disabled>
+      </div>
+      <label for="unidad" id="etiquetaUnidad">Unidad de medida</label>
+      <select id="unidad" required></select>
       <label for="codigo">Código de barras</label>
       <input id="codigo" maxlength="50">
       <label for="compra">Precio de compra</label>
