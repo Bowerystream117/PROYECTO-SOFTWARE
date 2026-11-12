@@ -8,7 +8,7 @@ window.operacionesImperio = (() => {
     return sesion;
   }
 
-  async function solicitar(ruta, datos) {
+  async function solicitar(ruta, datos, comoArchivo = false) {
     const sesion = autorizar();
     const respuesta = await fetch("/api/" + ruta, {
       method: datos ? "POST" : "GET",
@@ -16,6 +16,7 @@ window.operacionesImperio = (() => {
       headers: { Authorization: "Bearer " + sesion.token, ...(datos && { "Content-Type": "application/json" }) },
       body: datos ? JSON.stringify(datos) : undefined
     });
+    if (comoArchivo && respuesta.ok) return respuesta.blob();
     const resultado = await respuesta.json();
     if (!respuesta.ok) throw new Error(resultado.mensaje || "No se pudo completar la operación.");
     return resultado;
@@ -28,10 +29,17 @@ window.operacionesImperio = (() => {
     }));
   }
 
-  async function reporte({ desde, hasta, tipo }, pagina = 1, porPagina = 25) {
-    const filtros = new URLSearchParams({ tipo, pagina, porPagina });
+  function filtrosReporte({ desde, hasta, tipo }) {
+    const filtros = new URLSearchParams({ tipo });
     if (desde) filtros.set("desde", desde);
     if (hasta) filtros.set("hasta", hasta);
+    return filtros;
+  }
+
+  async function reporte(criterios, pagina = 1, porPagina = 25) {
+    const filtros = filtrosReporte(criterios);
+    filtros.set("pagina", pagina);
+    filtros.set("porPagina", porPagina);
     const datos = await solicitar("reportes?" + filtros);
     if (!datos?.resumen || !Array.isArray(datos.movimientos) ||
         !Number.isInteger(datos.total) || !Number.isInteger(datos.pagina) ||
@@ -43,6 +51,7 @@ window.operacionesImperio = (() => {
 
   return {
     autorizar, productos, reporte,
+    reporteExcel: filtros => solicitar("reportes/excel?" + filtrosReporte(filtros), undefined, true),
     mermas: () => solicitar("mermas"),
     registrarMerma: datos => solicitar("mermas", datos)
   };

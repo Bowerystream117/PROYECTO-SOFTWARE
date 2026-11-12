@@ -22,10 +22,17 @@ window.uiImperio = (() => {
   }
   function csv(encabezados, filas, nombre = "imperio-"+hoy()) {
     const escapar = valor => '"'+String(valor ?? "").replace(/^\s*[=+@\-]|^[\t\r\n]/,"'$&").replace(/"/g,'""')+'"';
-    const contenido = "\uFEFFsep=;\r\n"+[encabezados,...filas].map(fila=>fila.map(escapar).join(";")).join("\r\n");
-    const url=URL.createObjectURL(new Blob([contenido],{type:"text/csv;charset=utf-8"}));
-    const enlace=document.createElement("a");enlace.href=url;enlace.download=nombre+".csv";enlace.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const contenido = "\uFEFF"+[encabezados,...filas].map(fila=>fila.map(escapar).join(";")).join("\r\n");
+    descargar(new Blob([contenido],{type:"text/csv;charset=utf-8"}), nombre+".csv");
+  }
+  function descargar(archivo, nombre) {
+    const url = URL.createObjectURL(archivo);
+    const enlace = document.createElement("a");
+    enlace.href = url;
+    enlace.download = nombre;
+    enlace.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   async function ejecutar(tarea) {try {await tarea();} catch(error) {avisar(error.message,true);}}
-  return {elemento,fechaCorta,dinero,hoy,avisar,tabla,csv,ejecutar};
+  return {elemento,fechaCorta,dinero,hoy,avisar,tabla,csv,descargar,ejecutar};
 })();

@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  const { elemento, tabla, csv, ejecutar, dinero, avisar, hoy, fechaCorta } = uiImperio;
+  const { elemento, tabla, csv, descargar, ejecutar, dinero, avisar, hoy, fechaCorta } = uiImperio;
   try { operacionesImperio.autorizar(true); } catch { return; }
   const encabezados = ["Fecha", "Tipo", "Producto", "Cantidad", "Unidad", "Usuario", "Observación"];
   const titulos = {
@@ -8,7 +8,7 @@
     salida: "Salidas de insumos", merma: "Mermas y desperdicios"
   };
   const indicadores = { entrada: "Entradas", salida: "Salidas", merma: "Mermas", ventas: "Ventas en cortes (MXN)" };
-  const botones = ["filtrar", "anterior", "siguiente", "exportar", "imprimir"];
+  const botones = ["filtrar", "anterior", "siguiente", "exportarExcel", "exportar", "imprimir"];
   let filtros;
   let resultado;
   let ocupado = false;
@@ -96,6 +96,12 @@
   elemento("filtros").onsubmit = evento => { evento.preventDefault(); filtrar(); };
   elemento("anterior").onclick = () => procesar(() => actualizar(filtros, resultado.pagina - 1));
   elemento("siguiente").onclick = () => procesar(() => actualizar(filtros, resultado.pagina + 1));
+  elemento("exportarExcel").onclick = () => procesar(async () => {
+    avisar("Preparando el archivo de Excel…");
+    const archivo = await operacionesImperio.reporteExcel(filtros);
+    descargar(archivo, "imperio-" + filtros.tipo + "-" + hoy() + ".xlsx");
+    avisar("");
+  });
   elemento("exportar").onclick = () => procesar(async () => {
     avisar("Preparando el CSV…");
     const datos = await reporteCompleto();
