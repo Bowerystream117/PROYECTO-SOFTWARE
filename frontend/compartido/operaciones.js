@@ -28,8 +28,8 @@ window.operacionesImperio = (() => {
     }));
   }
 
-  function reporte(desde, hasta) {
-    const filtros = new URLSearchParams();
+  function reporte({ desde, hasta, tipo }, pagina = 1, porPagina = 25) {
+    const filtros = new URLSearchParams({ tipo, pagina, porPagina });
     if (desde) filtros.set("desde", desde);
     if (hasta) filtros.set("hasta", hasta);
     return solicitar("reportes?" + filtros);

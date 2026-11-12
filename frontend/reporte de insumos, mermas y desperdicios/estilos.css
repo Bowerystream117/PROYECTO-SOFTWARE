@@ -1,1 +1,39 @@
 @import url("../compartido/modulos.css");
+
+.subtitulo { margin: 6px 0 0; color: #6b6053; line-height: 1.5; }
+.accionesReporte, .paginacion, .paginacion > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.accionesReporte button, .paginacion button { min-height: 42px; border-color: #d4c7b6; }
+.accionesReporte button:hover:not(:disabled), .paginacion button:hover:not(:disabled) { background: #f4ebda; }
+.resumenReporte { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+.resumenReporte .indicador { border-top: 3px solid #b69353; }
+.resumenReporte .indicador:only-child { width: min(100%, 320px); }
+.encabezadoResultados, .paginacion { justify-content: space-between; }
+.encabezadoResultados { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.encabezadoResultados h2 { margin: 0; font-size: 18px; }
+#rangoResultados, #pagina { color: #665c51; font-size: .85rem; }
+.paginacion { padding: 12px 0 0; }
+#tabla td:last-child { overflow-wrap: anywhere; }
+#reporteImpresion { display: none; }
+
+@media print {
+  @page { size: A4 landscape; margin: 12mm; }
+  body.imprimiendoReporte { background: white; color: #161616; }
+  .imprimiendoReporte #reportePantalla { display: none; }
+  .imprimiendoReporte #reporteImpresion { display: block; }
+  .cabeceraImpresion { border-bottom: 2px solid #785712; padding-bottom: 5mm; margin-bottom: 5mm; break-inside: avoid; }
+  .cabeceraImpresion img { display: block; width: 47mm; height: auto; margin-bottom: 4mm; }
+  .cabeceraImpresion h1 { font-size: 19pt; }
+  .cabeceraImpresion p { margin: 2mm 0 0; font-size: 10pt; }
+  #resumenImpresion { display: flex; gap: 4mm; margin-bottom: 5mm; break-inside: avoid; }
+  #resumenImpresion .indicador { border-color: #b9ad9e; padding: 2mm 4mm; }
+  #resumenImpresion .indicador strong { font-size: 15pt; }
+  #tablaImpresion { width: 100%; min-width: 0; table-layout: fixed; font-size: 9pt; }
+  #tablaImpresion thead { display: table-header-group; }
+  #tablaImpresion tr { break-inside: avoid; }
+  #tablaImpresion th, #tablaImpresion td { white-space: normal; overflow-wrap: anywhere; padding: 2mm; }
+  #tablaImpresion th { border-block: 1px solid #6d6254; }
+  #tablaImpresion td { border-bottom: 1px solid #d2cbc1; }
+  #tablaImpresion th:nth-child(3) { width: 20%; }
+  #tablaImpresion th:nth-child(4), #tablaImpresion th:nth-child(5) { width: 10%; }
+  #tablaImpresion th:last-child { width: 23%; }
+}
