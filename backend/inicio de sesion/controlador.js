@@ -55,10 +55,12 @@ export async function iniciarSesion(req, res) {
       });
     }
 
+    let hashActual = anterior;
     if (!hash) {
+      hashActual = await proteger(contrasena);
       const [cambio] = await conexion.execute(
         "UPDATE usuarios SET password_hash=? WHERE id_usuario=? AND activo=1 AND BINARY password_hash=?",
-        [await proteger(contrasena), usuario.id_usuario, anterior]
+        [hashActual, usuario.id_usuario, anterior]
       );
       if (!cambio.affectedRows) return res.status(401).json({ mensaje: "Vuelve a iniciar sesión." });
     }
@@ -66,7 +68,7 @@ export async function iniciarSesion(req, res) {
 
     return res.json({
       id: usuario.id_usuario,
-      token: crearToken(usuario.id_usuario),
+      token: crearToken(usuario.id_usuario, hashActual),
       usuario: usuario.nombre,
       correo: usuario.correo,
       rol

@@ -1,4 +1,4 @@
-import { exigirDuena } from "../inicio de sesion/sesiones.js";
+import { exigirDuena, exigirSesion } from "../inicio de sesion/sesiones.js";
 import { modificarInventario } from "./escritura.js";
 import { Router } from "express";
 import { obtenerInventario } from "./controlador.js";
@@ -7,7 +7,7 @@ import { unidades } from "./unidades.js";
 
 const rutas = Router();
 
-rutas.get("/", obtenerInventario);
+rutas.get("/", exigirSesion, obtenerInventario);
 rutas.get("/opciones", exigirDuena, async (_req, res, next) => {
   try {
     const [filas] = await conexion.execute("SELECT DISTINCT nombre FROM categorias ORDER BY nombre");

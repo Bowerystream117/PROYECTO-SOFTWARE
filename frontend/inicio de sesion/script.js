@@ -5,6 +5,15 @@ const campoContrasena = document.getElementById("campoContrasena");
 const botonIniciar = document.getElementById("botonIniciar");
 const botonCancelar = document.getElementById("botonCancelar");
 const mensajeEstado = document.getElementById("mensajeEstado");
+const verContrasena = document.getElementById("verContrasena");
+
+function mostrarContrasena(visible) {
+  campoContrasena.type = visible ? "text" : "password";
+  verContrasena.setAttribute("aria-pressed", String(visible));
+  verContrasena.title = visible ? "Ocultar contraseña" : "Mostrar contraseña";
+}
+
+verContrasena.addEventListener("click", () => mostrarContrasena(campoContrasena.type === "password"));
 
 // Acceso mediante los usuarios registrados en MySQL.
 formularioAcceso.addEventListener("submit", async evento => {
@@ -32,6 +41,7 @@ formularioAcceso.addEventListener("submit", async evento => {
 });
 botonCancelar.addEventListener("click", () => {
   formularioAcceso.reset();
+  mostrarContrasena(false);
   mensajeEstado.textContent = "";
   campoUsuario.focus();
 });

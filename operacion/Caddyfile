@@ -1,0 +1,5 @@
+# Define IMPERIO_IP_LOCAL con la IP reservada de la computadora del negocio.
+https://{$IMPERIO_IP_LOCAL} {
+	tls internal
+	reverse_proxy 127.0.0.1:3000
+}

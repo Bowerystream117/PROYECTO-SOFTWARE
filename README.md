@@ -61,7 +61,13 @@ Para una base nueva, crea la primera cuenta de Dueña. Ejecuta esto en PowerShel
 
 Para una base existente, ejecuta `node --env-file=.env migrar-claves.js` para proteger todas las contraseñas antiguas. Cambia las contraseñas de las cuentas de prueba o dales de baja desde Perfiles antes de usar datos reales. Las contraseñas que se hayan compartido antes necesitan un cambio aunque estén protegidas en la base.
 
-Arranca con `npm.cmd start` y abre [http://127.0.0.1:3000](http://127.0.0.1:3000). Para compartir la app, configura un servidor con HTTPS, MySQL y respaldos. Define `HOST=0.0.0.0` si tu plataforma lo requiere.
+Arranca con `npm.cmd start` y abre [http://127.0.0.1:3000](http://127.0.0.1:3000). Para usar varios dispositivos en el Wi-Fi del negocio, sigue la [guía de operación en red local](operacion/README.md).
+
+En Perfiles, la Dueña puede cambiar contraseñas y buscar cuentas en el historial de inactivos. Reactivar una cuenta requiere una contraseña nueva y mantiene el mismo usuario y sus registros. Si la Dueña pierde el acceso, recupera su cuenta activa desde la computadora de Imperio con este comando en PowerShell 7, dentro de `backend`:
+
+```powershell
+(Read-Host -MaskInput 'Nueva contraseña de al menos 12 caracteres') | node --env-file=.env crear-duena.js duena@example.com --restablecer
+```
 
 El stock inicial se captura al crear un producto. Usa Entradas y Salidas para cambiar las existencias de un producto que ya está registrado.
 

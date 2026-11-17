@@ -1,1 +1,15 @@
 @import url("../compartido/modulos.css");
+
+.subtitulo { margin: 6px 0 0; color: #6b6053; line-height: 1.5; }
+.accionesReporte, .paginacion, .paginacion > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.accionesReporte button, .paginacion button { min-height: 42px; border-color: #d4c7b6; }
+.accionesReporte button:hover:not(:disabled), .paginacion button:hover:not(:disabled) { background: #f4ebda; }
+.resumenReporte { grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+.resumenReporte .indicador { border-top: 3px solid #b69353; }
+.resumenReporte .indicador:only-child { width: min(100%, 320px); }
+.encabezadoResultados, .paginacion { justify-content: space-between; }
+.encabezadoResultados { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.encabezadoResultados h2 { margin: 0; font-size: 18px; }
+#rangoResultados, #pagina { color: #665c51; font-size: .85rem; }
+.paginacion { padding: 12px 0 0; }
+#tabla td:last-child { overflow-wrap: anywhere; }
