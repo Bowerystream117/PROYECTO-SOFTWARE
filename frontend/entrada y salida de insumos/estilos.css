@@ -13,4 +13,7 @@
 .aviso { font-size:13px; color:#625c54; line-height:1.5; }
 #mensajeEstado.error { color:#a1250b; }
 @media(max-width:850px) { .formularios { grid-template-columns:1fr; } }
-@media(max-width:380px) { .campos { grid-template-columns:1fr; } }
+@media(max-width:620px) {
+  .campos { grid-template-columns: minmax(0,1fr); }
+  .campo input, .campo select { font-size:16px; }
+}

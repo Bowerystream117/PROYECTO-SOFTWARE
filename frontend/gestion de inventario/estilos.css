@@ -61,3 +61,13 @@ a.opcion { text-decoration:none; }
   main { overflow: visible; }
 }
 #estadoActualizacion:empty { display: none; }
+@media screen and (max-width: 620px) {
+  .barraLateral { max-height: 36dvh; padding: 12px 16px; }
+  .barraLateral nav { flex-wrap: wrap; overflow: visible; gap: 3px; }
+  .barraLateral nav .opcion { padding: 8px 10px; }
+  .pieMenu { padding-top: 5px; }
+  main { padding: 20px 16px; }
+  input, select, textarea { min-width: 0; max-width: 100%; font-size: 16px; }
+  input[type="date"] { display: block; width: 100%; min-height: 44px; appearance: none; -webkit-appearance: none; }
+  .campo, .campos > *, .filtrosReporte > * { min-width: 0; }
+}
