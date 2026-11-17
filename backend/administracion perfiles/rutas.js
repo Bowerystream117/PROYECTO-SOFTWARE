@@ -1,6 +1,6 @@
 import { Router } from "express";
 import conexion from "../Conexion BaseDatos/conexion.js";
-import { exigirDuena } from "../inicio de sesion/sesiones.js";
+import { exigirDuena, revocarSesiones } from "../inicio de sesion/sesiones.js";
 import { proteger } from "../inicio de sesion/claves.js";
 
 const rutas = Router();
@@ -45,9 +45,16 @@ async function guardar(req, res, next) {
     if (clave) valores.push(await proteger(clave));
     if (id) {
       const cambioClave = clave ? ", password_hash=?" : "";
+      const requiereCuentaActiva = datos.estado === "activo" && !clave;
       const [resultado] = await conexion.execute(
-        "UPDATE usuarios SET nombre=?, correo=?, id_rol=?, activo=?" + cambioClave + " WHERE id_usuario=?", [...valores, id]);
-      if (!resultado.affectedRows) return res.status(404).json({ mensaje: "El usuario ya no existe." });
+        "UPDATE usuarios SET nombre=?, correo=?, id_rol=?, activo=?" + cambioClave +
+        " WHERE id_usuario=?" + (requiereCuentaActiva ? " AND activo=1" : ""), [...valores, id]);
+      if (!resultado.affectedRows) {
+        const [[usuario]] = await conexion.execute("SELECT id_usuario FROM usuarios WHERE id_usuario=?", [id]);
+        if (!usuario) return res.status(404).json({ mensaje: "El usuario ya no existe." });
+        return res.status(409).json({ mensaje: "Escribe una contraseña nueva para reactivar la cuenta." });
+      }
+      if (clave || datos.estado === "baja") revocarSesiones(Number(id));
     } else {
       await conexion.execute("INSERT INTO usuarios (nombre,correo,id_rol,activo,password_hash) VALUES (?,?,?,?,?)", valores);
     }
@@ -59,4 +66,22 @@ async function guardar(req, res, next) {
 }
 rutas.post("/", guardar);
 rutas.put("/:id", guardar);
+
+rutas.patch("/:id/contrasena", async (req, res, next) => {
+  const { id } = req.params;
+  const { contrasena } = req.body || {};
+  if (!/^[1-9]\d{0,9}$/.test(id)) return res.status(400).json({ mensaje: "Usuario inválido." });
+  if (typeof contrasena !== "string" || contrasena.length < 8 || contrasena.length > 128) {
+    return res.status(400).json({ mensaje: "Escribe una contraseña de 8 a 128 caracteres." });
+  }
+  try {
+    const [resultado] = await conexion.execute(
+      "UPDATE usuarios SET password_hash=? WHERE id_usuario=? AND activo=1",
+      [await proteger(contrasena), id]);
+    if (!resultado.affectedRows) return res.status(409).json({ mensaje: "La cuenta ya no está activa." });
+    revocarSesiones(Number(id));
+    res.json({ mensaje: "Contraseña actualizada." });
+  } catch (error) { next(error); }
+});
+
 export default rutas;
