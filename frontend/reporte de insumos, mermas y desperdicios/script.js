@@ -109,9 +109,30 @@
     avisar("");
   });
   elemento("imprimir").onclick = () => procesar(async () => {
+    const vistaPrevia = window.open("about:blank", "_blank");
+    if (!vistaPrevia) throw new Error("Permite abrir ventanas emergentes de Imperio para ver el PDF.");
+    vistaPrevia.opener = null;
+    vistaPrevia.document.title = "Vista previa del reporte | Imperio";
+    vistaPrevia.document.body.textContent = "Preparando el PDF…";
     avisar("Preparando el PDF…");
-    const archivo = await operacionesImperio.reportePdf(filtros);
-    descargar(archivo, "imperio-" + filtros.tipo + "-" + hoy() + ".pdf");
+    try {
+      const archivo = await operacionesImperio.reportePdf(filtros);
+      if (vistaPrevia.closed) {
+        avisar("");
+        return;
+      }
+      const url = URL.createObjectURL(archivo);
+      vistaPrevia.location.replace(url);
+      const limpieza = setInterval(() => {
+        if (vistaPrevia.closed) {
+          URL.revokeObjectURL(url);
+          clearInterval(limpieza);
+        }
+      }, 1000);
+    } catch (error) {
+      vistaPrevia.close();
+      throw error;
+    }
     avisar("");
   });
   filtrar();
