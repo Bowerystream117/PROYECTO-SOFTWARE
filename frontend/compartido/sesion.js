@@ -51,22 +51,18 @@ window.sesionImperio = {
     aviso = document.createElement("dialog");
     aviso.className = "avisoSesion";
     aviso.setAttribute("aria-labelledby", "tituloSesionVencida");
-    aviso.setAttribute("aria-describedby", "detalleSesionVencida");
     const titulo = document.createElement("h2");
     titulo.id = "tituloSesionVencida";
-    titulo.textContent = "Vuelve a iniciar sesión";
-    const detalle = document.createElement("p");
-    detalle.id = "detalleSesionVencida";
-    detalle.textContent = "Tu sesión terminó. Puede haber vencido, haberse reiniciado el servidor o haberse actualizado tu acceso. Ingresa de nuevo para continuar.";
+    titulo.textContent = "Tu sesión expiró";
     const boton = document.createElement("button");
     boton.type = "button";
     boton.className = "primario";
-    boton.textContent = "Ir a iniciar sesión";
+    boton.textContent = "Iniciar sesión";
     boton.addEventListener("click", () => {
       try { sesionImperio.cerrar(); }
       finally { location.replace("../inicio de sesion/index.html"); }
     });
-    aviso.append(titulo, detalle, boton);
+    aviso.append(titulo, boton);
     aviso.addEventListener("cancel", evento => evento.preventDefault());
     document.body.append(aviso);
     aviso.showModal();
