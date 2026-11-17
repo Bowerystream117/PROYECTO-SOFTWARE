@@ -18,7 +18,7 @@ export async function obtenerInventario(req, res) {
              LEFT JOIN categorias c ON c.id_categoria = p.id_categoria`
         );
 
-        res.json(productos);
+        res.set("Cache-Control", "no-store").json(productos);
     } catch (error) {
         console.error("Error al obtener el inventario:", error);
         res.status(500).json({ mensaje: "Error interno al consultar la base de datos." });

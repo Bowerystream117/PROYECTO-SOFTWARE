@@ -60,3 +60,4 @@ a.opcion { text-decoration:none; }
   .barraLateral { display: none; }
   main { overflow: visible; }
 }
+#estadoActualizacion:empty { display: none; }

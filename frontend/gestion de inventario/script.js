@@ -25,29 +25,41 @@
   const vistaEmpleado = sessionStorage.getItem("imperioVistaEmpleado") === "true";
   let productoEnEdicion = null;
   let productos = [];
+  let cargaActual = 0;
+  let consultaAutomatica = false;
   const nuevaCategoriaValor = "__nueva_categoria__";
   async function solicitud(metodo, id, producto) {
     const ruta = "/api/inventario" + (id ? "/" + encodeURIComponent(id) : "");
     const respuesta = await fetch(ruta, {
       method: metodo,
+      cache: "no-store",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + (sesion.token || "") },
       body: producto ? JSON.stringify(producto) : undefined
     });
+    if (respuesta.status === 401) {
+      sesionImperio.cerrar();
+      location.replace("../inicio de sesion/index.html");
+      throw new Error("Vuelve a iniciar sesión.");
+    }
     if (!respuesta.headers.get("content-type")?.includes("application/json")) {
-      throw new Error("Abre el proyecto desde http://localhost:3000.");
+      throw new Error("Abre Inventario desde la dirección de Imperio.");
     }
     const datos = await respuesta.json();
     if (!respuesta.ok) throw new Error(datos.mensaje || "No se pudo completar la operación.");
     return datos;
   }
-  async function cargarProductos() {
+  async function cargarProductos(automatica = false) {
+    const carga = ++cargaActual;
     const filas = await solicitud("GET");
-    productos = filas.map(p => ({
+    if (carga !== cargaActual || (automatica && (dialogoProducto.open || cuerpoInventario.contains(document.activeElement)))) return;
+    const lista = filas.map(p => ({
       id: String(p.id_producto), nombre: p.nombre, unidad: p.unidad_medida,
       categoria: p.categoria_nombre, codigo: p.codigo_barras,
       compra: p.precio_compra, venta: p.precio_venta,
       stock: Number(p.stock_actual), minimo: Number(p.stock_minimo)
     }));
+    if (automatica && JSON.stringify(productos) === JSON.stringify(lista)) return;
+    productos = lista;
     actualizarCategorias();
     dibujarInventario();
   }
@@ -240,4 +252,16 @@
     if (buscarElemento("botonGuardar").disabled) evento.preventDefault();
   });
   await refrescar();
+  setInterval(async () => {
+    if (document.hidden || dialogoProducto.open || consultaAutomatica) return;
+    consultaAutomatica = true;
+    try {
+      await cargarProductos(true);
+      buscarElemento("estadoActualizacion").textContent = "";
+    } catch {
+      buscarElemento("estadoActualizacion").textContent = "No se pudo actualizar el stock. Se volverá a intentar.";
+    } finally {
+      consultaAutomatica = false;
+    }
+  }, 5000);
 })();
