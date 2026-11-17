@@ -37,8 +37,6 @@
       body: producto ? JSON.stringify(producto) : undefined
     });
     if (respuesta.status === 401) {
-      sesionImperio.cerrar();
-      location.replace("../inicio de sesion/index.html");
       throw new Error("Vuelve a iniciar sesión.");
     }
     if (!respuesta.headers.get("content-type")?.includes("application/json")) {

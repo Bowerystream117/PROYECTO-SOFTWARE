@@ -41,3 +41,46 @@ window.sesionImperio = {
     }
   }
 };
+
+(() => {
+  const solicitar = window.fetch.bind(window);
+  let aviso;
+
+  function pedirAcceso() {
+    if (aviso) return;
+    aviso = document.createElement("dialog");
+    aviso.className = "avisoSesion";
+    aviso.setAttribute("aria-labelledby", "tituloSesionVencida");
+    aviso.setAttribute("aria-describedby", "detalleSesionVencida");
+    const titulo = document.createElement("h2");
+    titulo.id = "tituloSesionVencida";
+    titulo.textContent = "Vuelve a iniciar sesión";
+    const detalle = document.createElement("p");
+    detalle.id = "detalleSesionVencida";
+    detalle.textContent = "Tu sesión terminó. Puede haber vencido, haberse reiniciado el servidor o haberse actualizado tu acceso. Ingresa de nuevo para continuar.";
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "primario";
+    boton.textContent = "Ir a iniciar sesión";
+    boton.addEventListener("click", () => {
+      try { sesionImperio.cerrar(); }
+      finally { location.replace("../inicio de sesion/index.html"); }
+    });
+    aviso.append(titulo, detalle, boton);
+    aviso.addEventListener("cancel", evento => evento.preventDefault());
+    document.body.append(aviso);
+    aviso.showModal();
+    boton.focus();
+  }
+
+  window.fetch = async (recurso, opciones) => {
+    const respuesta = await solicitar(recurso, opciones);
+    const direccion = new URL(recurso instanceof Request ? recurso.url : recurso, location.href);
+    const cabeceras = new Headers(opciones?.headers ?? (recurso instanceof Request ? recurso.headers : undefined));
+    if (respuesta.status === 401 && direccion.origin === location.origin &&
+        direccion.pathname.startsWith("/api/") && cabeceras.has("Authorization")) {
+      pedirAcceso();
+    }
+    return respuesta;
+  };
+})();

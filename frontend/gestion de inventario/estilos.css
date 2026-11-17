@@ -61,6 +61,11 @@ a.opcion { text-decoration:none; }
   main { overflow: visible; }
 }
 #estadoActualizacion:empty { display: none; }
+.avisoSesion { width: 420px; max-width: calc(100% - 32px); color: var(--texto); }
+.avisoSesion::backdrop { background: #17130ed9; }
+.avisoSesion h2 { margin: 0 0 12px; font-size: 22px; }
+.avisoSesion p { line-height: 1.55; margin: 0 0 22px; }
+.avisoSesion button { width: 100%; min-height: 44px; padding: 12px; border-radius: 8px; }
 @media screen and (max-width: 620px) {
   .barraLateral { max-height: 36dvh; padding: 12px 16px; }
   .barraLateral nav { flex-wrap: nowrap; overflow-x: auto; gap: 3px; min-height: 38px; scrollbar-width: thin; }
