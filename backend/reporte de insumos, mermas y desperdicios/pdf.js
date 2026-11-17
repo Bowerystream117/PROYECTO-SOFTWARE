@@ -1,7 +1,7 @@
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "node:url";
 
-const logo = fileURLToPath(new URL("../../frontend/compartido/logo-imperio.png", import.meta.url));
+const logo = fileURLToPath(new URL("../../frontend/compartido/logo-imperio-gris.png", import.meta.url));
 const titulos = {
   todos: "Movimientos generales", entrada: "Entradas de insumos",
   salida: "Salidas de insumos", merma: "Mermas y desperdicios"
@@ -29,13 +29,13 @@ export function crearPdf(tipo, desde, hasta, datos) {
       doc.image(logo, -205, -52, { width: 410 });
       doc.restore();
       doc.image(logo, 36, 30, { width: 150 });
-      doc.font("Helvetica-Bold").fontSize(17).fillColor("#262019");
+      doc.font("Helvetica-Bold").fontSize(17).fillColor("#222222");
       doc.text(titulos[tipo], 36, 85, { width: ancho });
       const periodo = [desde && "Desde " + fecha(desde), hasta && "hasta " + fecha(hasta)]
         .filter(Boolean).join(" ") || "Todo el período registrado";
-      doc.font("Helvetica").fontSize(9).fillColor("#665c51");
+      doc.font("Helvetica").fontSize(9).fillColor("#666666");
       doc.text(periodo + " · " + datos.total + " registros", 36, 110, { width: ancho });
-      doc.moveTo(36, 132).lineTo(36 + ancho, 132).strokeColor("#b69353").stroke();
+      doc.moveTo(36, 132).lineTo(36 + ancho, 132).strokeColor("#888888").stroke();
       y = 145;
       if (primera) {
         const nombres = { entrada: "Entradas", salida: "Salidas", merma: "Mermas" };
@@ -43,14 +43,14 @@ export function crearPdf(tipo, desde, hasta, datos) {
         if (datos.ventas !== undefined) indicadores.push("Ventas en cortes (MXN): " +
           Number(datos.ventas).toLocaleString("es-MX", { minimumFractionDigits: 2 }));
         const texto = indicadores.join("    ");
-        doc.fontSize(9).fillColor("#262019");
+        doc.fontSize(9).fillColor("#222222");
         const alto = doc.heightOfString(texto, { width: ancho });
         doc.text(texto, 36, y, { width: ancho });
         y += alto + 18;
       }
-      doc.rect(36, y, ancho, 23).fill("#eee8dc");
+      doc.rect(36, y, ancho, 23).fill("#eeeeee");
       let x = 36;
-      doc.font("Helvetica-Bold").fontSize(8).fillColor("#262019");
+      doc.font("Helvetica-Bold").fontSize(8).fillColor("#222222");
       encabezados.forEach((titulo, i) => {
         doc.text(titulo, x + 4, y + 7, { width: anchos[i] - 8, lineBreak: false });
         x += anchos[i];
@@ -96,14 +96,14 @@ export function crearPdf(tipo, desde, hasta, datos) {
         if (y + 20 > 788) nuevaHoja();
         const cantidad = Math.min(pendiente, Math.floor((788 - y - 8) / 11));
         let x = 36;
-        doc.fillColor("#262019");
+        doc.fillColor("#222222");
         celdas.forEach((celda, i) => {
           const texto = celda.splice(0, cantidad).join("\n");
           doc.text(texto, x + 4, y + 4, { width: anchos[i] - 8, lineGap: 1.75 });
           x += anchos[i];
         });
         y += cantidad * 11 + 8;
-        doc.moveTo(36, y).lineTo(36 + ancho, y).strokeColor("#e8e2d7").stroke();
+        doc.moveTo(36, y).lineTo(36 + ancho, y).strokeColor("#dddddd").stroke();
         pendiente = Math.max(...celdas.map(celda => celda.length));
       }
     }
@@ -112,7 +112,7 @@ export function crearPdf(tipo, desde, hasta, datos) {
     for (let i = 0; i < rango.count; i++) {
       doc.switchToPage(i);
       doc.page.margins.bottom = 20;
-      doc.font("Helvetica").fontSize(8).fillColor("#665c51")
+      doc.font("Helvetica").fontSize(8).fillColor("#666666")
         .text("Imperio · Clamatos & Snacks", 36, 806, { lineBreak: false });
       doc.text("Página " + (i + 1) + " de " + rango.count, 420, 806, { width: 139, align: "right", lineBreak: false });
     }
