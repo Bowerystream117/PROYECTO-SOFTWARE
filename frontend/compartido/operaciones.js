@@ -52,6 +52,7 @@ window.operacionesImperio = (() => {
   return {
     autorizar, productos, reporte,
     reporteExcel: filtros => solicitar("reportes/excel?" + filtrosReporte(filtros), undefined, true),
+    reportePdf: filtros => solicitar("reportes/pdf?" + filtrosReporte(filtros), undefined, true),
     mermas: () => solicitar("mermas"),
     registrarMerma: datos => solicitar("mermas", datos)
   };

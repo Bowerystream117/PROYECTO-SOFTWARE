@@ -4,6 +4,7 @@ import { exigirDuena } from "../inicio de sesion/sesiones.js";
 import { fechaValida, formatearMovimiento } from "../entrada y salida de insumos/servicio.js";
 import { transaccion } from "../gestion de cuentas financieras/servicio.js";
 import { crearExcel } from "./excel.js";
+import { crearPdf } from "./pdf.js";
 
 const rutas = Router();
 const tipos = ["entrada", "salida", "merma"];
@@ -28,7 +29,7 @@ function entero(valor, maximo) {
   return typeof valor === "string" && /^[1-9]\d{0,8}$/.test(valor) && Number(valor) <= maximo;
 }
 
-async function generar(db, tipo, filtros, pagina, porPagina) {
+async function generar(db, tipo, filtros, pagina, porPagina, completo = false) {
   const general = tipo === "todos";
   const resumen = {};
   if (tipo !== "merma") {
@@ -59,7 +60,7 @@ async function generar(db, tipo, filtros, pagina, porPagina) {
   const total = Object.values(resumen).reduce((suma, cantidad) => suma + cantidad, 0);
   const paginaActual = Math.min(pagina, Math.max(1, Math.ceil(total / porPagina)));
   return {
-    movimientos: await leerMovimientos(db, tipo, filtros, porPagina, (paginaActual - 1) * porPagina),
+    movimientos: await leerMovimientos(db, tipo, filtros, completo ? undefined : porPagina, (paginaActual - 1) * porPagina),
     resumen, total, pagina: paginaActual, porPagina, ...(general && { ventas })
   };
 }
@@ -81,7 +82,7 @@ async function leerMovimientos(db, tipo, filtros, limite, inicio = 0) {
   return filas.map(fila => fila.tipo === "merma" ? fila : formatearMovimiento(fila));
 }
 
-rutas.get(["/", "/excel"], exigirDuena, async (req, res, next) => {
+rutas.get(["/", "/excel", "/pdf"], exigirDuena, async (req, res, next) => {
   const { desde = null, hasta = null, tipo = "todos", pagina = "1", porPagina = "25" } = req.query;
   if ((desde !== null && !fechaValida(desde)) || (hasta !== null && !fechaValida(hasta)) ||
       (desde && hasta && desde > hasta)) {
@@ -93,7 +94,15 @@ rutas.get(["/", "/excel"], exigirDuena, async (req, res, next) => {
   try {
     const inicio = desde ? desde + " 00:00:00" : null;
     const fin = hasta ? hasta + " 23:59:59" : null;
-    if (req.path === "/excel") {
+    const formato = req.path.replace(/\/$/, "");
+    if (formato === "/pdf") {
+      const datos = await transaccion(conexion, db =>
+        generar(db, tipo, [inicio, inicio, fin, fin], 1, 25, true));
+      const archivo = await crearPdf(tipo, desde, hasta, datos);
+      return res.set("Cache-Control", "no-store").type("application/pdf")
+        .attachment("imperio-" + tipo + ".pdf").send(archivo);
+    }
+    if (formato === "/excel") {
       const movimientos = await leerMovimientos(conexion, tipo, [inicio, inicio, fin, fin]);
       const archivo = await crearExcel(tipo, desde, hasta, movimientos);
       return res.set("Cache-Control", "no-store").type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

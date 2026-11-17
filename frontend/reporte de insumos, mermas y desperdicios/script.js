@@ -109,20 +109,10 @@
     avisar("");
   });
   elemento("imprimir").onclick = () => procesar(async () => {
-    avisar("Preparando el reporte para impresión…");
-    const datos = await reporteCompleto();
-    elemento("tituloImpresion").textContent = titulos[filtros.tipo];
-    elemento("periodoImpresion").textContent = periodo(filtros) + " · " + datos.total + " registros";
-    metricas(datos, elemento("resumenImpresion"));
-    tabla(encabezados, filas(datos.movimientos), elemento("tablaImpresion"));
-    await elemento("reporteImpresion").querySelector("img").decode().catch(() => {});
+    avisar("Preparando el PDF…");
+    const archivo = await operacionesImperio.reportePdf(filtros);
+    descargar(archivo, "imperio-" + filtros.tipo + "-" + hoy() + ".pdf");
     avisar("");
-    document.body.classList.add("imprimiendoReporte");
-    window.addEventListener("afterprint", () => {
-      document.body.classList.remove("imprimiendoReporte");
-      elemento("tablaImpresion").replaceChildren();
-    }, { once: true });
-    window.print();
   });
   filtrar();
 })();
