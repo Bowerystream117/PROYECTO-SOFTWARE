@@ -788,4 +788,4 @@ Te propongo trabajar con este orden: primero crear un repositorio local, despué
 
 Como siguiente ejercicio, podemos utilizar el proyecto **Sistema Imperio** para aprender paso a paso cómo incorporar cambios de tus compañeros sin afectar las versiones que ya funcionan.&#x20;
 
-![Captura 1](./capturas/captura_1)
+![Captura 1](./capturas/captura1.png)
