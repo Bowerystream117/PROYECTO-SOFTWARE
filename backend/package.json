@@ -1,1 +1,1 @@
-{"name":"imperio-acceso-mysql","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node --env-file=.env servidor.js"},"dependencies":{"express":"^4.21.2","mysql2":"^3.11.5"}}
+{"name":"imperio-acceso-mysql","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node --env-file=.env servidor.js"},"dependencies":{"exceljs":"^4.4.0","express":"^4.21.2","mysql2":"^3.11.5","pdfkit":"^0.20.2"},"overrides":{"exceljs":{"uuid":"11.1.1"}}}

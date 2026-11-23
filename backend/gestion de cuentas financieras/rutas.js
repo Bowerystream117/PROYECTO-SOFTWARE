@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import pool from '../Conexion BaseDatos/conexion.js';
 import {exigirDuena} from '../inicio de sesion/sesiones.js';
+import {fechaValida} from '../entrada y salida de insumos/servicio.js';
 import {validar,clave,insertar,transaccion,fallo,cuentas} from './servicio.js';
 const rutas=Router();rutas.use(exigirDuena);rutas.use((_q,r,n)=>{r.set('Cache-Control','no-store');n();});
 rutas.get('/',async(req,res,next)=>{try{
@@ -9,8 +10,9 @@ rutas.get('/',async(req,res,next)=>{try{
  const condiciones=[],args=[];
  if(req.query.cuenta){if(!cuentas.includes(req.query.cuenta))throw fallo('Cuenta inválida.');condiciones.push('m.cuenta=?');args.push(req.query.cuenta);}
  for(const [campo,op] of [['desde','>='],['hasta','<=']])if(req.query[campo]){
- if(!/^\d{4}-\d{2}-\d{2}$/.test(req.query[campo]))throw fallo('Filtro de fecha inválido.');
+ if(!fechaValida(req.query[campo]))throw fallo('Filtro de fecha inválido.');
  condiciones.push(`DATE(m.fecha_movimiento)${op}?`);args.push(req.query[campo]);}
+ if(req.query.desde && req.query.hasta && req.query.desde>req.query.hasta)throw fallo('Selecciona un rango de fechas válido.');
  const [movimientos]=await db.execute(`SELECT m.*,DATE_FORMAT(m.fecha_movimiento,'%Y-%m-%d') AS fecha,u.nombre AS usuario FROM movimientos_financieros m JOIN usuarios u ON u.id_usuario=m.id_usuario ${condiciones.length?'WHERE '+condiciones.join(' AND '):''} ORDER BY m.fecha_movimiento DESC,m.id_movimiento_financiero DESC LIMIT 200`,args);
  const [cortes]=await db.query(`SELECT c.id_corte,DATE_FORMAT(c.fecha_corte,'%Y-%m-%d %H:%i') AS fecha,u.nombre AS usuario,c.ventas_efectivo,c.ventas_tarjeta,
  EXISTS(SELECT 1 FROM movimientos_financieros f WHERE f.referencia=CONCAT('corte:',c.id_corte,':efectivo')) AS efectivo_registrado,

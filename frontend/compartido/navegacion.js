@@ -39,4 +39,8 @@ window.modulosImperio = [
   const cerrar=document.createElement("button");cerrar.id="botonCerrarSesion";cerrar.className="opcion";cerrar.textContent="Cerrar sesión";
   cerrar.addEventListener("click",()=>{sesionImperio.cerrar();location.replace("../inicio de sesion/index.html");});
   pie.append(cambiar,cerrar);barra.append(marca,menu,pie);
+  if (matchMedia("(max-width: 620px)").matches) {
+    const activa=menu.querySelector(".activa");
+    if (activa) menu.scrollLeft=Math.max(0,activa.offsetLeft-menu.offsetLeft-12);
+  }
 })();
