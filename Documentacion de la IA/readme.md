@@ -789,3 +789,1019 @@ Te propongo trabajar con este orden: primero crear un repositorio local, despué
 Como siguiente ejercicio, podemos utilizar el proyecto **Sistema Imperio** para aprender paso a paso cómo incorporar cambios de tus compañeros sin afectar las versiones que ya funcionan.&#x20;
 
 ![Captura 1](./capturas/captura1.png)
+
+
+"Conexion de BD a frontend"
+Modelo: ChatGPT Sol (Alto)
+
+Prompt:
+Eres un ingeniero en sistemas dedicado a las bases de datos, su conexion con el backed y la integracion de datos a esta. Actualmente estas actuando como un profesor, consejero y guia para un grupo de jovenes inexpertos. Ahora, los jovenes ya tienen un frontend tecnicamente funcional, con botones, labels entre otros, pero estos no estan conectados a la base de datos. Para esto, los jovenes estan usando JavaScript principalmente mientras la base de datos se encuentra en MySQL. Donde ademas, el programa se usa de forma local. Que deben hacer los jovenes para conectar la base de datos con el frontend y asi ingresar a los usuarios, siendo asi el inicio del backend, ya que toda la logica y procesamiento va en ese apartado. Y ademas, como pueden correr el programa, dado a que no hay ningun ejecutable ni archivo main como tal.
+
+Resultado:
+# **Guía de ingeniería de software: conectar JavaScript con MySQL mediante un backend**
+
+El objetivo de esta primera etapa es transformar una interfaz visual que ya funciona en un **sistema capaz de registrar usuarios, consultar información en MySQL, validar credenciales y permitir el acceso a las distintas funciones de la aplicación**.
+
+Hay algo importante que deben comprender desde el principio: **no necesitan convertir su proyecto en un ejecutable ni tener un archivo llamado&#x20;**`main`**&#x20;para que funcione**. Las aplicaciones web tienen otra forma de ejecutarse.
+
+## **1. Comprender cómo funciona el sistema**
+
+Actualmente, los estudiantes tienen dos partes:
+
+- **Frontend:** pantallas, botones, formularios y demás elementos construidos con HTML, CSS y JavaScript.
+- **Base de datos:** MySQL, donde se almacenará la información del programa.
+
+Lo que les hace falta es el componente intermedio: el **backend**, encargado de recibir las solicitudes, aplicar la lógica, consultar MySQL y devolver resultados.
+
+Las tres capas se comunican dentro de la misma computadora durante el desarrollo local.
+
+Por ejemplo, cuando alguien oprime el botón de **Iniciar sesión**, debe ocurrir lo siguiente:
+
+1. El frontend obtiene el correo y contraseña introducidos.
+2. JavaScript envía esos datos al backend.
+3. El backend consulta la tabla de usuarios de MySQL.
+4. Verifica la contraseña de forma segura y comprueba si el usuario está activo.
+5. Si las credenciales son válidas, crea una sesión y devuelve la respuesta.
+6. El frontend permite entrar a la pantalla correspondiente.
+
+El frontend **no debe conectarse directamente a MySQL**. Las credenciales de la base de datos, las consultas y la validación de usuarios deben permanecer en el backend.
+
+## **2. Qué tecnologías necesitan**
+
+Como ya están trabajando con JavaScript, no necesitan aprender inmediatamente otro lenguaje de programación.
+
+| Tecnología             | Función                                  |
+| ---------------------- | ---------------------------------------- |
+| HTML, CSS y JavaScript | Interfaz y comunicación con el servidor  |
+| Node.js                | Ejecutar JavaScript fuera del navegador  |
+| Express                | Crear el servidor y sus rutas            |
+| MySQL                  | Almacenar los datos                      |
+| mysql2                 | Conectar Node.js con MySQL               |
+| bcryptjs               | Proteger y verificar contraseñas         |
+| express-session        | Mantener la sesión del usuario           |
+| VS Code                | Escribir y ejecutar el proyecto          |
+| MySQL Workbench        | Administrar y consultar la base de datos |
+
+Express y mysql2 son herramientas compatibles con esta arquitectura.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://expressjs.com\&sz=32)
+
+Express.js+1
+
+
+
+No necesitan que MySQL Workbench permanezca abierto, pero **sí que el servicio de MySQL esté ejecutándose**.
+
+## **3. Organizar las carpetas del proyecto**
+
+Antes de programar, deben organizar correctamente el sistema.
+
+Supongamos que su proyecto se llama `PROYECTO-SOFTWARE`.
+
+**PROYECTO-SOFTWARE/**
+
+&#x20;**frontend/**
+
+&#x20;index.html
+
+&#x20;panel.html
+
+&#x20;app.js
+
+&#x20;estilos.css
+
+&#x20;**backend/**
+
+&#x20;server.js Inicia el servidor
+
+&#x20;package.json
+
+&#x20;.env Configuración privada
+
+&#x20;.gitignore
+
+&#x20;node_modules/ Dependencias instaladas
+
+Esta es una estructura de aprendizaje. Cuando tengan más módulos, podrán separar las rutas, controladores, consultas y servicios del backend en diferentes archivos.
+
+**Importante:** si ya tienen archivos como `servidor.js`, `db.js` o una carpeta de inicio de sesión, no deben eliminarlos ni crear otros que dupliquen su funcionalidad. Primero hay que identificar qué está construido.
+
+## **4. Instalar Node.js e iniciar el backend**
+
+En Windows, deben instalar Node.js desde su [sitio oficial](https://nodejs.org/en/download?utm_source=chatgpt.com). Recomiendo la versión LTS.
+
+Después, abran VS Code, entren a la terminal y ejecuten:
+
+```
+node -v
+npm -v
+```
+
+Si ambos comandos muestran versiones, la instalación funciona.
+
+Ahora entren a la carpeta del backend:
+
+```
+cd backend
+```
+
+Si todavía no existe un archivo `package.json`, ejecútenlo una sola vez:
+
+```
+npm init -y
+```
+
+Después instalen las bibliotecas:
+
+```
+npm install express mysql2 bcryptjs express-session dotenv
+```
+
+¿Qué están instalando?
+
+- `express`: recibe solicitudes del frontend.
+- `mysql2`: ejecuta consultas MySQL desde el backend.
+- `bcryptjs`: genera y comprueba hashes de contraseñas.
+- `express-session`: administra las sesiones de inicio de sesión.
+- `dotenv`: permite leer la configuración desde un archivo `.env`.
+
+Si el proyecto ya tiene `package.json` con esas dependencias, normalmente basta con `npm install`.
+
+## **5. Preparar la base de datos de usuarios**
+
+Esta parte deben hacerla desde MySQL Workbench.
+
+Primero comprueben qué bases de datos tienen:
+
+```
+SHOW DATABASES;
+```
+
+Supongamos que están utilizando una llamada `mydb`:
+
+```
+USE mydb;
+
+SHOW TABLES;
+```
+
+Si ya existe una tabla `usuarios`, consulten su estructura:
+
+```
+DESCRIBE usuarios;
+```
+
+No deben crear otra tabla con el mismo propósito. Deben adaptar el backend a las columnas existentes.
+
+Para explicar el proceso, utilizaremos esta estructura de ejemplo, **únicamente si todavía no tienen una tabla de usuarios**:
+
+```
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(150) NOT NULL UNIQUE,
+    contrasena_hash VARCHAR(255) NOT NULL,
+    activo TINYINT(1) NOT NULL DEFAULT 1
+);
+```
+
+La columna `contrasena_hash` almacena un hash seguro, nunca la contraseña original.
+
+Para comprobar los usuarios registrados:
+
+```
+SELECT id, nombre, correo, activo
+FROM usuarios;
+```
+
+No necesitamos mostrar hashes de contraseñas para comprobar que el registro se realizó.
+
+## **6. Configurar la conexión entre Node.js y MySQL**
+
+Dentro de `backend`, creen un archivo llamado `.env`.
+
+```
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=COLOQUEN_SU_CONTRASENA
+DB_NAME=mydb
+
+PORT=3001
+SESSION_SECRET=COLOQUEN_UNA_CLAVE_ALEATORIA_LARGA
+```
+
+Cambien los valores por los que utiliza su instalación de MySQL. El puerto `3306` es el predeterminado de MySQL; el `3001` será el puerto de nuestra aplicación.
+
+La clave de sesión debe ser larga, aleatoria y privada.
+
+Agreguen también un archivo `.gitignore`:
+
+```
+node_modules/
+.env
+```
+
+Así evitan subir sus contraseñas a GitHub.
+
+## **7. Programar el backend**
+
+Ahora viene la integración más importante.
+
+Vamos a crear un servidor capaz de:
+
+- Conectarse a MySQL.
+- Registrar un usuario nuevo.
+- Validar el inicio de sesión.
+- Consultar quién ha iniciado sesión.
+- Cerrar la sesión.
+
+En `package.json`, asegúrense de tener `"type": "module"` y estos scripts. Conserven las demás propiedades y dependencias que npm haya generado:
+
+```
+{
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  }
+}
+```
+
+Esto permite utilizar `import` y ejecutar el servidor mediante comandos de npm.
+
+### **Archivo&#x20;**`backend/server.js`
+
+```
+
+import "dotenv/config";
+import express from "express";
+import mysql from "mysql2/promise";
+import bcrypt from "bcryptjs";
+import session from "express-session";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const app = express();
+const PORT = Number(process.env.PORT || 3001);
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// 1. Conexión con MySQL
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10
+});
+
+// 2. Configuración del servidor
+app.use(express.json());
+
+if (!process.env.SESSION_SECRET) {
+  throw new Error("Falta SESSION_SECRET en .env");
+}
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false, // Solo para desarrollo HTTP local
+    maxAge: 8 * 60 * 60 * 1000
+  }
+}));
+
+// 3. Probar la conexión
+app.get("/api/salud", async (req, res) => {
+  try {
+    await db.query("SELECT 1");
+    res.json({
+      mensaje: "Backend y MySQL conectados"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al consultar MySQL"
+    });
+  }
+});
+
+// 4. Registrar un usuario
+app.post("/api/registro", async (req, res) => {
+  const nombre = typeof req.body.nombre === "string"
+    ? req.body.nombre.trim() : "";
+  const correo = typeof req.body.correo === "string"
+    ? req.body.correo.trim().toLowerCase() : "";
+  const contrasena = req.body.contrasena;
+
+  if (
+    nombre.length < 2 ||
+    !correo.includes("@") ||
+    typeof contrasena !== "string" ||
+    contrasena.length < 8 ||
+    Buffer.byteLength(contrasena, "utf8") > 72
+  ) {
+    return res.status(400).json({
+      mensaje: "Datos de registro inválidos"
+    });
+  }
+
+  try {
+    const hash = await bcrypt.hash(contrasena, 12);
+
+    const [resultado] = await db.execute(
+      `INSERT INTO usuarios
+       (nombre, correo, contrasena_hash, activo)
+       VALUES (?, ?, ?, 1)`,
+      [nombre, correo, hash]
+    );
+
+    res.status(201).json({
+      mensaje: "Usuario registrado correctamente",
+      id: resultado.insertId
+    });
+
+  } catch (error) {
+    if (error.code === "ER_DUP_ENTRY") {
+      return res.status(409).json({
+        mensaje: "El correo ya está registrado"
+      });
+    }
+
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error al registrar usuario"
+    });
+  }
+});
+
+// 5. Iniciar sesión
+app.post("/api/login", async (req, res) => {
+  const correo = typeof req.body.correo === "string"
+    ? req.body.correo.trim().toLowerCase() : "";
+  const contrasena = req.body.contrasena;
+
+  if (!correo || typeof contrasena !== "string") {
+    return res.status(400).json({
+      mensaje: "Correo y contraseña requeridos"
+    });
+  }
+
+  try {
+    const [filas] = await db.execute(
+      `SELECT id, nombre, correo, contrasena_hash, activo
+       FROM usuarios
+       WHERE correo = ?
+       LIMIT 1`,
+      [correo]
+    );
+
+    const usuario = filas[0];
+
+    if (
+      !usuario ||
+      Number(usuario.activo) !== 1 ||
+      !(await bcrypt.compare(
+        contrasena,
+        usuario.contrasena_hash
+      ))
+    ) {
+      return res.status(401).json({
+        mensaje: "Credenciales inválidas o usuario inactivo"
+      });
+    }
+
+    // Crear una sesión nueva tras autenticar
+    req.session.regenerate((error) => {
+      if (error) {
+        return res.status(500).json({
+          mensaje: "Error al crear sesión"
+        });
+      }
+
+      req.session.usuario = {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo
+      };
+
+      res.json({
+        mensaje: "Inicio de sesión correcto",
+        usuario: req.session.usuario
+      });
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error interno del servidor"
+    });
+  }
+});
+
+// 6. Consultar la sesión actual
+app.get("/api/yo", (req, res) => {
+  if (!req.session.usuario) {
+    return res.status(401).json({
+      mensaje: "No has iniciado sesión"
+    });
+  }
+
+  res.json({ usuario: req.session.usuario });
+});
+
+// 7. Cerrar sesión
+app.post("/api/salir", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      return res.status(500).json({
+        mensaje: "No se pudo cerrar sesión"
+      });
+    }
+
+    res.clearCookie("connect.sid");
+    res.json({ mensaje: "Sesión cerrada" });
+  });
+});
+
+// 8. Mostrar el frontend desde el mismo servidor
+app.use(express.static(
+  path.join(__dirname, "../frontend")
+));
+
+// 9. Iniciar el programa
+app.listen(PORT, "127.0.0.1", () => {
+  console.log(`Servidor en http://127.0.0.1:${PORT}`);
+});
+
+```
+
+Este archivo concentra varias funciones para que puedan aprender el funcionamiento completo. Después es recomendable separarlo en archivos de conexión, rutas, controladores y autenticación.
+
+Dos aspectos importantes:
+
+**Consultas preparadas:** la función `db.execute()` con símbolos `?` permite enviar los parámetros de las consultas de manera segura, evitando construir SQL mediante concatenación de datos introducidos por el usuario.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://github.com\&sz=32)
+
+GitHub+1
+
+
+
+**Protección de contraseñas:** el ejemplo utiliza bcrypt con un costo de 12. Las contraseñas nunca deben guardarse en texto plano. Para sistemas nuevos de producción, OWASP recomienda preferentemente Argon2id.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://cheatsheetseries.owasp.org\&sz=32)
+
+OWASP Cheat Sheet Series
+
+
+
+## **8. Conectar el frontend existente**
+
+El siguiente paso es lograr que el botón de inicio de sesión realmente envíe los datos.
+
+Voy a usar un ejemplo básico. Si ya tienen un diseño elaborado, no necesitan sustituirlo: únicamente deben adaptar los identificadores y el JavaScript.
+
+### **Archivo&#x20;**`frontend/index.html`
+
+```
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso al sistema</title>
+</head>
+<body>
+
+  <h2>Registro de usuarios</h2>
+
+  <form id="formRegistro">
+    <input id="nombre" placeholder="Nombre" required>
+    <input id="correoRegistro" type="email"
+           placeholder="Correo" required>
+    <input id="claveRegistro" type="password"
+           placeholder="Contraseña" required>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <h2>Inicio de sesión</h2>
+
+  <form id="formLogin">
+    <input id="correoLogin" type="email"
+           placeholder="Correo" required>
+    <input id="claveLogin" type="password"
+           placeholder="Contraseña" required>
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+```
+
+### **Archivo&#x20;**`frontend/app.js`
+
+```
+
+const mensaje = document.getElementById("mensaje");
+
+// REGISTRAR USUARIO
+document.getElementById("formRegistro")
+  .addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+
+    try {
+      const respuesta = await fetch("/api/registro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre: document.getElementById("nombre").value,
+          correo: document.getElementById("correoRegistro").value,
+          contrasena: document.getElementById("claveRegistro").value
+        })
+      });
+
+      const datos = await respuesta.json();
+      mensaje.textContent = datos.mensaje;
+    } catch (error) {
+      mensaje.textContent = "No se pudo contactar al servidor";
+    }
+  });
+
+// INICIAR SESIÓN
+document.getElementById("formLogin")
+  .addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+
+    try {
+      const respuesta = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          correo: document.getElementById("correoLogin").value,
+          contrasena: document.getElementById("claveLogin").value
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      if (respuesta.ok) {
+        window.location.href = "/panel.html";
+      } else {
+        mensaje.textContent = datos.mensaje;
+      }
+    } catch (error) {
+      mensaje.textContent = "No se pudo contactar al servidor";
+    }
+  });
+
+```
+
+Observen esta instrucción:
+
+```
+fetch("/api/login", {
+  method: "POST",
+  // ...
+});
+```
+
+Aquí es donde **el frontend comienza a comunicarse con el backend**.
+
+El navegador envía los datos a `/api/login`, Express recibe la petición, consulta MySQL y responde con el resultado.
+
+El frontend no realiza consultas SQL ni conoce la contraseña de MySQL.
+
+### **Archivo&#x20;**`frontend/panel.html`
+
+Una vez que el usuario inicia sesión, queremos mostrar una pantalla de bienvenida.
+
+```
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel principal</title>
+</head>
+<body>
+
+  <h1 id="bienvenida">Validando sesión...</h1>
+  <button id="salir">Cerrar sesión</button>
+
+  <script>
+    async function verificarSesion() {
+      try {
+        const respuesta = await fetch("/api/yo");
+
+        if (!respuesta.ok) {
+          window.location.replace("/");
+          return;
+        }
+
+        const datos = await respuesta.json();
+
+        document.getElementById("bienvenida")
+          .textContent = "Bienvenido, " + datos.usuario.nombre;
+
+      } catch (error) {
+        document.getElementById("bienvenida")
+          .textContent = "Error de conexión";
+      }
+    }
+
+    document.getElementById("salir")
+      .addEventListener("click", async () => {
+        const respuesta = await fetch("/api/salir", {
+          method: "POST"
+        });
+
+        if (respuesta.ok) {
+          window.location.replace("/");
+        }
+      });
+
+    verificarSesion();
+  </script>
+
+</body>
+</html>
+
+```
+
+Es importante distinguir dos cosas: verificar la sesión en `panel.html` mejora la navegación, pero **no protege por sí solo los datos sensibles**. Las rutas del backend que consulten inventarios, ventas o usuarios también deberán comprobar la sesión y los permisos.
+
+El ejemplo también utiliza el almacenamiento de sesiones en memoria predeterminado de `express-session`, que sirve para aprender y hacer pruebas locales. Si el servidor se reinicia, se perderán esas sesiones; para producción se necesita un almacenamiento persistente adecuado.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://expressjs.com\&sz=32)
+
+Express.js
+
+
+
+## **9. ¿Cómo ejecutar el programa sin un archivo main o ejecutable?**
+
+Esta es una de las preguntas más importantes.
+
+En Java, C++ o C#, probablemente están acostumbrados a buscar un `main` o un ejecutable.
+
+En una aplicación web con Node.js, el archivo de entrada puede llamarse `server.js`, `app.js`, `index.js` o cualquier otro nombre. Lo importante es indicar a Node.js cuál ejecutar.
+
+En nuestro ejemplo, `server.js`**&#x20;es el punto de entrada del programa**.
+
+### **Procedimiento completo en Windows**
+
+1. **Iniciar el servicio MySQL.** Confirmen en MySQL Workbench que pueden conectarse y consultar la base de datos.
+2. **Abrir VS Code** con la carpeta del proyecto y una terminal dentro de `backend`.
+3. **Ejecutar el servidor:**
+   ```
+   npm start
+   ```
+   O durante el desarrollo, para reiniciar automáticamente al modificar el backend:
+   ```
+   npm run dev
+   ```
+4. **Comprobar el mensaje de la terminal:**
+   ```
+   Servidor en http://127.0.0.1:3001
+   ```
+5. **Abrir el navegador** e ingresar a:
+
+   [http://127.0.0.1:3001/](http://127.0.0.1:3001/?utm_source=chatgpt.com)
+6. **Registrar un usuario e iniciar sesión.** Comprobar después en Workbench que el registro realmente se guardó.
+
+Para probar exclusivamente la comunicación con MySQL, abran:
+
+`http://127.0.0.1:3001/api/salud`
+
+Si todo funciona, verán una respuesta semejante a esta:
+
+```
+{
+  "mensaje": "Backend y MySQL conectados"
+}
+```
+
+Esta prueba es importante porque confirma la conexión antes de intentar el registro.
+
+**¿Y Live Server?** Si utilizan la extensión Live Server de VS Code, pueden seguir usándola para desarrollar páginas aisladas. Sin embargo, este ejemplo sirve el frontend directamente desde Express para evitar problemas de puertos, CORS y cookies. Por eso deben abrir el puerto `3001` y no la página mediante Live Server.
+
+No necesitan mantener dos servidores web para este primer ejercicio.
+
+## **10. Simulación de las primeras pruebas**
+
+Así deberían comprobar el resultado:
+
+PRUEBA 1 DE 5
+
+Conexión
+
+## **¿Está funcionando el backend?**
+
+ACCIÓN
+
+Abrir /api/salud
+
+RESULTADO ESPERADO
+
+El servidor responde y confirma que MySQL está conectado.
+
+&#x20;AnteriorSiguiente prueba&#x20;
+
+Esta simulación sirve como lista de comprobación. Los resultados esperados deben verificarse realmente en su programa.
+
+## **11. Errores comunes que probablemente encontrarán**
+
+| Error                                          | Qué revisar                                                                                  |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `ECONNREFUSED`                                 | El servicio MySQL está detenido, el puerto es incorrecto o no se está ejecutando el backend. |
+| `ER_ACCESS_DENIED_ERROR`                       | El usuario o contraseña de MySQL no coinciden.                                               |
+| `ER_BAD_DB_ERROR`                              | La base de datos configurada no existe.                                                      |
+| `ER_NO_SUCH_TABLE`                             | La tabla no existe en el esquema seleccionado.                                               |
+| `Unknown column`                               | El nombre de una columna del código no coincide con MySQL.                                   |
+| `Cannot find module`                           | Faltan dependencias; revisen `npm install`.                                                  |
+| `Cannot use import statement outside a module` | Revisen `"type": "module"` en `package.json`.                                                |
+| `EADDRINUSE`                                   | Ya hay otro proceso utilizando ese puerto.                                                   |
+| `Failed to fetch`                              | La solicitud no puede llegar al servidor; revisen dirección, puerto y consola.               |
+
+Si llegan a modificar la estructura de la base de datos, recuerden actualizar las consultas correspondientes. Un nombre diferente de columna puede hacer que falle el inicio de sesión aunque la conexión esté funcionando.
+
+## **12. Cómo comenzar a integrar los demás módulos**
+
+Una vez que funcione la autenticación, el procedimiento será similar para las demás funciones del sistema.
+
+Por ejemplo, para un módulo de inventario:
+
+**Ejemplo: consultar inventario**
+
+GET /api/productos
+
+**Frontend:** el usuario entra a la pantalla de inventario y JavaScript solicita los productos.
+
+**Backend:** verifica la sesión, consulta la tabla de productos y prepara la respuesta.
+
+**MySQL:** entrega los registros solicitados.
+
+**Frontend:** recibe los datos y los muestra en una tabla.
+
+Las primeras operaciones que deberían dominar se conocen como **CRUD**:
+
+| Operación  | HTTP        | Ejemplo                                      |
+| ---------- | ----------- | -------------------------------------------- |
+| Crear      | POST        | Registrar producto                           |
+| Leer       | GET         | Consultar inventario                         |
+| Actualizar | PUT / PATCH | Cambiar precio                               |
+| Eliminar   | DELETE      | Eliminar producto, si la política lo permite |
+
+Para desarrollar esos módulos, también deben introducir autorización por roles. No basta con ocultar botones a los empleados: el backend debe comprobar qué puede hacer cada usuario.
+
+Además, si el alta de usuarios será exclusiva de un administrador, deben restringir `/api/registro` a usuarios autorizados. El ejemplo anterior deja esa ruta abierta únicamente para facilitar el ejercicio inicial. Tampoco deben aceptar un rol de administrador enviado libremente desde el frontend.
+
+Para pasar de prototipo local a una aplicación utilizada en un negocio, serán necesarios controles adicionales: validación robusta, protección contra abuso de inicio de sesión, prevención de CSRF, sesiones persistentes, respaldos, permisos mínimos de MySQL y HTTPS cuando exista tráfico por red.
+
+## **13. Orden de trabajo que recomiendo para el equipo**
+
+Como profesor, no les recomendaría intentar conectar todos los botones del programa simultáneamente.
+
+Primero deben completar una función de principio a fin, desde la pantalla hasta la base de datos.
+
+**Avance de integración**
+
+0 / 8
+
+Verificar que Node.js y MySQL funcionan
+
+Levantar el servidor Express
+
+Probar la conexión con MySQL
+
+Registrar un usuario desde el frontend
+
+Iniciar y cerrar sesión correctamente
+
+Restringir las rutas según los permisos
+
+Consultar y mostrar datos del inventario
+
+Implementar altas, cambios y bajas de registros
+
+### **Conclusión**
+
+Los estudiantes no necesitan reconstruir su interfaz ni cambiar de lenguaje.
+
+Necesitan conseguir que estas tres partes trabajen juntas:
+
+**Frontend JavaScript → Backend Node.js/Express → MySQL.**
+
+El archivo `server.js` será el punto de entrada; `npm start` ejecutará el programa y el navegador permitirá utilizarlo localmente.
+
+La primera meta concreta es conseguir que **un usuario escrito en un formulario HTML quede registrado en MySQL y después pueda iniciar sesión con esas mismas credenciales**.
+
+Cuando eso funcione, habrán construido su primera integración completa y tendrán la base para desarrollar el resto de su sistema de inventarios, usuarios, ventas y administración.
+
+![Captura 2](./capturas/captura2.png)
+
+"Errores en concetarse a Github"
+Modelo: ChatGPT Sol (Alto)
+
+Prompt:
+Tengo un problema, un compañero de equipo supuestamente está en el Github, en el repositorio. Pero no le salen las ramas ni los commits
+![Captura 3](./capturas/captura3R1.jpg)
+
+Resultado:
+Por lo que veo en la fotografía, **tu compañero sí tiene un historial de Git, pero posiblemente no está trabajando con la carpeta correcta del repositorio o no ha descargado las referencias de las ramas remotas de GitHub.**
+
+Hay algo importante: **en la imagen sí aparecen commits**, en la sección *Graph*, y también se observa la rama `main`. Lo que necesitamos comprobar es si está conectado al repositorio correcto y si tiene las ramas actualizadas.
+
+## **1. Primero, abrir correctamente el proyecto**
+
+En la fotografía, la terminal muestra esta ubicación:
+
+`C:\Users\ricky\OneDrive\Desktop\ingenieria software`
+
+Sin embargo, su proyecto aparentemente debería encontrarse dentro de la carpeta `PROYECTO-SOFTWARE`.
+
+Que la terminal esté en la carpeta superior no demuestra que VS Code tenga abierto el repositorio incorrecto, pero conviene verificarlo.
+
+Que haga lo siguiente:
+
+1. En VS Code, seleccionar **File → Open Folder**.
+2. Buscar la carpeta `PROYECTO-SOFTWARE`.
+3. Abrirla.
+4. Abrir una terminal nueva.
+
+Después ejecutar:
+
+```
+git remote -v
+```
+
+Este comando nos mostrará a qué repositorio de GitHub está conectado.
+
+**Debe aparecer la dirección del repositorio que ustedes utilizan como equipo.**
+
+## **2. Descargar las referencias de las ramas y commits**
+
+Una vez confirmado el repositorio, que ejecute:
+
+```
+git fetch --all --prune
+```
+
+Este comando descarga la información de las ramas y commits remotos y elimina referencias remotas obsoletas.
+
+**Importante:** No modifica los archivos de trabajo ni fusiona cambios.
+
+Después:
+
+```
+git branch -a
+```
+
+Aquí deberían aparecer:
+
+- `main`: su rama local.
+- `remotes/origin/main`: rama principal de GitHub.
+- `remotes/origin/nombre-rama`: otras ramas que hayan sido publicadas.
+
+## **3. Comprobar todos los commits disponibles**
+
+Que ejecute:
+
+```
+git log --oneline --all --graph --decorate -15
+```
+
+Esto mostrará los últimos 15 commits accesibles desde sus ramas y referencias locales y remotas.
+
+Para comprobar también si su rama está atrasada:
+
+```
+git status -sb
+```
+
+Si aparece algo como `behind 5`, significa que tiene cinco commits pendientes de integrar desde la rama remota correspondiente.
+
+## **4. ¿Y si siguen sin aparecer las otras ramas?**
+
+Puede ocurrir por tres motivos:
+
+| Causa                                                            | Solución                                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Está conectado a otro repositorio                                | Revisar `git remote -v`                                             |
+| No ha descargado las referencias remotas                         | Ejecutar `git fetch --all --prune`                                  |
+| Las ramas existen únicamente en la computadora de otro compañero | Ese compañero debe publicarlas con `git push -u origin nombre-rama` |
+
+También puede ser que todos estén trabajando directamente sobre `main`, en cuyo caso no necesariamente existirán otras ramas.
+
+## **Lo que necesito que haga tu compañero**
+
+Que ejecute estos cuatro comandos, **uno por uno**, dentro de la carpeta del proyecto:
+
+```
+git rev-parse --show-toplevel
+git remote -v
+git fetch --all --prune
+git branch -a
+```
+
+&#x20;Copiar comandos
+
+**Mándame una fotografía de los resultados de esos cuatro comandos.** Con eso podremos identificar si el problema es la carpeta, la conexión a GitHub o las ramas remotas, sin arriesgar los archivos que tu compañero ya tiene.
+
+Por ahora, que **no utilice&#x20;**`git reset --hard`**,&#x20;**`git pull --force`**&#x20;ni elimine su carpeta**, porque podría perder cambios locales.
+
+prompt:
+![Captura 3R2](./capturas/captura3R2.jpg)
+
+resultado:
+¡Perfecto! Ya encontramos el primer problema. La fotografía muestra este error:
+
+```
+fatal: not a git repository (or any of the parent directories): .git
+```
+
+Esto significa que **tu compañero está ejecutando los comandos fuera de la carpeta del repositorio Git**.
+
+No significa que haya perdido los commits ni que ya no tenga acceso a GitHub.
+
+## **1. Vamos a encontrar la carpeta correcta**
+
+Actualmente está ubicado en:
+
+```
+C:\Users\ricky\OneDrive\Desktop\ingenieria software
+```
+
+Primero, que escriba:
+
+```
+dir
+```
+
+Esto mostrará las carpetas que tiene dentro de `ingenieria software`.
+
+Busquen una carpeta llamada `PROYECTO-SOFTWARE` o el nombre que tenga el repositorio que clonaron.
+
+## **2. Entrar al repositorio**
+
+Si aparece `PROYECTO-SOFTWARE`, que ejecute:
+
+```
+cd .\PROYECTO-SOFTWARE
+```
+
+Después:
+
+```
+git status
+```
+
+Si está en el repositorio correcto, debería aparecer algo parecido a:
+
+```
+On branch main
+Your branch is up to date with 'origin/main'.
+```
+
+*El mensaje puede variar dependiendo de los cambios pendientes.*
+
+## **3. Recuperar la información de las ramas**
+
+Una vez que `git status` funcione, ejecuten:
+
+```
+git remote -v
+git fetch --all --prune
+git branch -a
+```
+
+Así podremos comprobar que está conectado al repositorio de GitHub correcto y ver las ramas disponibles.
+
+**Algo importante:** en la primera fotografía aparecían commits en el gráfico de VS Code. Eso sugiere que VS Code está detectando un repositorio, aunque la terminal esté ubicada en otra carpeta.
+
+Por eso, **no hagan&#x20;**`git init`**, no borren carpetas y tampoco vuelvan a clonar todavía**.
+
+Primero, que tu compañero ejecute únicamente:
+
+```
+dir
+```
+
+**Mándame una fotografía de lo que le aparece.** Así te digo exactamente a qué carpeta entrar y continuamos hasta conseguir que le aparezcan las ramas y commits de su equipo.
+
+prompt ![Captura 3R3](./capturas/captura3R3.jpg)
