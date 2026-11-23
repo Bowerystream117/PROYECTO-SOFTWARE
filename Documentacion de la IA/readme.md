@@ -1804,4 +1804,575 @@ dir
 
 **Mándame una fotografía de lo que le aparece.** Así te digo exactamente a qué carpeta entrar y continuamos hasta conseguir que le aparezcan las ramas y commits de su equipo.
 
-prompt ![Captura 3R3](./capturas/captura3R3.jpg)
+prompt 
+
+![Captura 3R3](./capturas/captura3R3.jpg)
+
+Pasar el front del canva a codigo
+AI: Chat GGPT en modo pensar
+Prompt:
+Eres un ingeniero en sistema que esta actuando como un docente y un guia para un grupo de desarrollo de software. Como tal tu especialidad es el fullstack y debes tanto guiar, explicar como dar un codigo funcional y explicado de forma detallada, ENTENDIDO?
+
+resultado:# **Entendido. Asumiré el rol de ingeniero en sistemas y docente Full Stack.**
+
+Como guía de tu grupo de desarrollo de software, mi enfoque será el siguiente:
+
+- **Explicar:** qué hace cada parte del código y por qué se utiliza.
+- **Guiar:** avanzar paso a paso, sin asumir que ya dominan los conceptos.
+- **Desarrollar:** proporcionar código funcional, organizado y listo para probar.
+- **Documentar:** explicar las variables, funciones, estructuras y tecnologías utilizadas.
+- **Resolver errores:** ayudar a detectar errores y explicar cómo corregirlos.
+- **Full Stack:** trabajar tanto en Front End como en Back End, bases de datos, APIs, seguridad y arquitectura del sistema.
+
+He recibido la palabra **ENTENDIDO**, por lo que, de acuerdo con la dinámica que establecimos, aquí tienes el contenido de los archivos del ZIP que proporcionaste.
+
+## **1. Archivo&#x20;**`index.html`
+
+Este archivo contiene la estructura HTML de la pantalla de inicio de sesión de Imperio.
+
+```
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión | Imperio</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="pantalla">
+    <aside class="panelMarca" aria-label="Imperio Clamatos y Snacks">
+      <div class="identidad">
+        <div class="logo" aria-label="Espacio para el logo">[LOGO]</div>
+        <p class="nombreMarca">IMPERIO</p>
+        <p class="giroMarca">CLAMATOS &amp; SNACKS</p>
+        <p class="descripcionSistema">Sistema de Gestión de Inventarios</p>
+      </div>
+    </aside>
+
+    <section class="panelAcceso" aria-labelledby="tituloAcceso">
+      <div class="contenedorFormulario">
+        <h1 id="tituloAcceso">Iniciar sesión</h1>
+        <p class="introduccion">Ingresa con tu usuario para continuar.</p>
+
+        <form id="formularioAcceso" novalidate>
+          <div class="grupoCampo">
+            <label for="campoUsuario">Usuario</label>
+            <input id="campoUsuario" name="usuario" type="text" placeholder="Ej. monica"
+              autocomplete="username" required aria-describedby="mensajeEstado">
+          </div>
+
+          <div class="grupoCampo">
+            <label for="campoContrasena">Contraseña</label>
+            <input id="campoContrasena" name="contrasena" type="password" placeholder="••••••••"
+              autocomplete="current-password" required aria-describedby="mensajeEstado">
+          </div>
+
+          <div class="acciones">
+            <button id="botonIniciar" class="boton botonIniciar" type="submit">Iniciar Sesión</button>
+            <button id="botonCancelar" class="boton botonCancelar" type="button">Cancelar</button>
+          </div>
+
+          <p class="notaAcceso">Acceso para Dueña y Empleados.</p>
+          <p id="mensajeEstado" class="mensajeEstado" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+```
+
+### **Explicación**
+
+- `<!DOCTYPE html>` indica que el documento utiliza HTML5.
+- `<html lang="es">` establece que el contenido está en español.
+- `<meta charset="UTF-8">` permite utilizar caracteres especiales.
+- `<meta name="viewport">` permite que la página se adapte a diferentes dispositivos.
+- `<link rel="stylesheet">` conecta el HTML con el archivo CSS.
+- `<script src="script.js" defer>` conecta el HTML con JavaScript y hace que se ejecute después de interpretar el documento.
+- `<main>` representa el contenido principal.
+- `<aside>` contiene la información de la marca.
+- `<section>` contiene el formulario de acceso.
+- `<form>` agrupa los campos de inicio de sesión.
+- `<label>` identifica los campos.
+- `<input>` permite introducir información.
+- `<button>` representa los botones de acción.
+
+## **2. Archivo&#x20;**`estilos.css`
+
+Este archivo controla la apariencia visual de la página.
+
+```
+/* Colores y medidas compartidas. */
+:root {
+  --fondoMarca: #eee8dc;
+  --fondoAcceso: #f8f5ef;
+  --colorTexto: #292521;
+  --colorSecundario: #6c665f;
+  --colorPrincipal: #cf360f;
+  --colorBorde: #a69e93;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--colorTexto);
+  background: var(--fondoAcceso);
+}
+
+.pantalla {
+  display: grid;
+  grid-template-columns: 38% 62%;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.panelMarca {
+  background: var(--fondoMarca);
+  display: flex;
+  align-items: center;
+  padding: 40px 32px;
+}
+
+.identidad {
+  text-align: center;
+  width: 265px;
+  max-width: 100%;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 138px;
+  height: 138px;
+  margin: 0 auto 18px;
+  border: 2px solid var(--colorSecundario);
+  border-radius: 50%;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: var(--colorSecundario);
+}
+
+.nombreMarca {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 8px;
+}
+
+.giroMarca {
+  margin: 20px 0 40px;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--colorSecundario);
+}
+
+.descripcionSistema {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #57534e;
+}
+
+.panelAcceso {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 60px 9% 60px 7%;
+}
+
+.contenedorFormulario {
+  width: 425px;
+  max-width: 100%;
+}
+
+h1 {
+  margin: 0 0 27px;
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.introduccion {
+  margin: 0 0 24px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--colorSecundario);
+}
+
+.grupoCampo {
+  margin-bottom: 23px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 16px;
+}
+
+input {
+  width: 100%;
+  height: 55px;
+  padding: 12px 15px;
+  border: 1px solid var(--colorBorde);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--colorTexto);
+  font: inherit;
+  font-size: 18px;
+}
+
+input::placeholder {
+  color: #7d7b78;
+  opacity: 1;
+}
+
+input[aria-invalid="true"] {
+  border-color: #b32913;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 3px solid #a64b2d;
+  outline-offset: 3px;
+}
+
+.acciones {
+  display: flex;
+  gap: 13px;
+}
+
+.boton {
+  flex: 1;
+  min-height: 55px;
+  padding: 12px;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.botonIniciar {
+  border: 1px solid var(--colorPrincipal);
+  background: var(--colorPrincipal);
+  color: white;
+  font-weight: 700;
+}
+
+.botonIniciar:hover {
+  background: #b92d0c;
+}
+
+.botonCancelar {
+  border: 1px solid var(--colorSecundario);
+  background: transparent;
+  color: var(--colorTexto);
+}
+
+.botonCancelar:hover {
+  background: #eee8dc;
+}
+
+.notaAcceso {
+  margin: 22px 0 0;
+  font-size: 14px;
+  color: var(--colorSecundario);
+  line-height: 1.5;
+}
+
+.mensajeEstado {
+  margin: 12px 0 0;
+  line-height: 1.5;
+  font-size: 14px;
+  color: var(--colorSecundario);
+}
+
+.mensajeEstado:empty {
+  display: none;
+}
+
+.mensajeEstado.error {
+  color: #b32913;
+}
+
+/* En celulares, la marca aparece arriba del formulario. */
+@media (max-width: 760px) {
+  .pantalla {
+    grid-template-columns: 1fr;
+  }
+
+  .panelMarca {
+    justify-content: center;
+    padding: 30px 24px;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    font-size: 12px;
+  }
+
+  .nombreMarca {
+    font-size: 34px;
+    letter-spacing: 6px;
+  }
+
+  .giroMarca {
+    font-size: 14px;
+    margin: 12px 0 20px;
+  }
+
+  .descripcionSistema {
+    font-size: 14px;
+  }
+
+  .panelAcceso {
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 360px) {
+  .acciones {
+    flex-direction: column;
+  }
+}
+```
+
+### **Explicación de CSS**
+
+| Elemento                 | Función                                    |
+| ------------------------ | ------------------------------------------ |
+| `:root`                  | Define variables globales de colores       |
+| `box-sizing: border-box` | Facilita el cálculo de dimensiones         |
+| `display: grid`          | Organiza la página en columnas             |
+| `display: flex`          | Distribuye elementos flexiblemente         |
+| `border-radius`          | Redondea las esquinas                      |
+| `padding`                | Espacio interno                            |
+| `margin`                 | Espacio externo                            |
+| `font-size`              | Tamaño de texto                            |
+| `@media`                 | Aplica estilos según el tamaño de pantalla |
+| `:hover`                 | Cambia el diseño al pasar el cursor        |
+| `:focus-visible`         | Mejora la accesibilidad mediante teclado   |
+
+## **3. Archivo&#x20;**`script.js`
+
+Este archivo contiene la lógica de funcionamiento del formulario.
+
+```
+"use strict";
+
+// Los nombres no llevan espacios: "botón iniciar" se escribe botonIniciar.
+const formularioAcceso = document.getElementById("formularioAcceso");
+const campoUsuario = document.getElementById("campoUsuario");
+const campoContrasena = document.getElementById("campoContrasena");
+const botonIniciar = document.getElementById("botonIniciar");
+const botonCancelar = document.getElementById("botonCancelar");
+const mensajeEstado = document.getElementById("mensajeEstado");
+
+function mostrarMensaje(texto, esError = false) {
+  mensajeEstado.textContent = texto;
+  mensajeEstado.classList.toggle("error", esError);
+}
+
+function limpiarValidacion() {
+  campoUsuario.removeAttribute("aria-invalid");
+  campoContrasena.removeAttribute("aria-invalid");
+  mostrarMensaje("");
+}
+
+function iniciarSesion(evento) {
+  evento.preventDefault(); // Evita recargar la página al enviar el formulario.
+  limpiarValidacion();
+
+  const usuario = campoUsuario.value.trim();
+
+  // No se recortan espacios de contraseñas: pueden ser parte de ellas.
+  const contrasena = campoContrasena.value;
+
+  if (!usuario || !contrasena) {
+    campoUsuario.setAttribute("aria-invalid", String(!usuario));
+    campoContrasena.setAttribute("aria-invalid", String(!contrasena));
+
+    mostrarMensaje(
+      "Escribe tu usuario y contraseña para continuar.",
+      true
+    );
+
+    (!usuario ? campoUsuario : campoContrasena).focus();
+    return;
+  }
+
+  // Maqueta: aquí se conectaría una API que valide las credenciales en el servidor.
+  // No guardar contraseñas en el código, localStorage ni la consola.
+
+  mostrarMensaje(
+    "Campos completos. Esta demostración aún no está conectada al sistema de acceso."
+  );
+}
+
+function cancelarAcceso() {
+  formularioAcceso.reset();
+  limpiarValidacion();
+  campoUsuario.focus();
+}
+
+// submit funciona tanto con el botón Iniciar como con la tecla Enter.
+botonIniciar.form.addEventListener("submit", iniciarSesion);
+botonCancelar.addEventListener("click", cancelarAcceso);
+campoUsuario.addEventListener("input", limpiarValidacion);
+campoContrasena.addEventListener("input", limpiarValidacion);
+```
+
+### **Explicación de JavaScript**
+
+#### **Declaración de variables**
+
+```
+const campoUsuario = document.getElementById("campoUsuario");
+```
+
+Busca el elemento HTML que tiene el identificador `campoUsuario`.
+
+`const` significa que la referencia de esa variable no será reasignada.
+
+#### **Función&#x20;**`mostrarMensaje`
+
+```
+function mostrarMensaje(texto, esError = false) {
+  mensajeEstado.textContent = texto;
+  mensajeEstado.classList.toggle("error", esError);
+}
+```
+
+Esta función muestra mensajes al usuario.
+
+- `texto`: el mensaje que se mostrará.
+- `esError`: indica si el mensaje debe utilizar el estilo de error.
+- `textContent`: modifica el texto del elemento HTML.
+- `classList.toggle`: agrega o quita una clase CSS dependiendo del valor.
+
+#### **Función&#x20;**`limpiarValidacion`
+
+```
+function limpiarValidacion() {
+  campoUsuario.removeAttribute("aria-invalid");
+  campoContrasena.removeAttribute("aria-invalid");
+  mostrarMensaje("");
+}
+```
+
+Elimina las marcas de error y limpia el mensaje de estado.
+
+#### **Función&#x20;**`iniciarSesion`
+
+```
+function iniciarSesion(evento) {
+```
+
+Se ejecuta cuando el formulario se envía.
+
+```
+evento.preventDefault();
+```
+
+Evita que el navegador recargue la página.
+
+```
+const usuario = campoUsuario.value.trim();
+```
+
+Obtiene el usuario y elimina espacios al inicio y al final.
+
+```
+const contrasena = campoContrasena.value;
+```
+
+Obtiene la contraseña sin modificarla.
+
+```
+if (!usuario || !contrasena)
+```
+
+Comprueba que ambos campos tengan información.
+
+Si falta alguno:
+
+- Marca el campo incorrecto.
+- Muestra un mensaje.
+- Enfoca el campo que necesita atención.
+
+Si ambos campos están completos, muestra un mensaje de demostración.
+
+**Importante:** este proyecto todavía no autentica usuarios. Para que el inicio de sesión sea real, será necesario desarrollar un Backend y conectar una base de datos.
+
+#### **Función&#x20;**`cancelarAcceso`
+
+```
+function cancelarAcceso() {
+  formularioAcceso.reset();
+  limpiarValidacion();
+  campoUsuario.focus();
+}
+```
+
+Esta función:
+
+1. Limpia el formulario.
+2. Elimina mensajes de error.
+3. Regresa el cursor al campo Usuario.
+
+## **4. Archivo&#x20;**`LEEME.txt`
+
+```
+IMPERIO — Pantalla de inicio de sesión
+
+1. Extrae el ZIP completo.
+2. Mantén index.html, estilos.css y script.js en la misma carpeta.
+3. Abre index.html con tu navegador.
+
+index.html: estructura, etiquetas, campos y botones.
+estilos.css: colores, tamaños y distribución adaptable a celulares.
+script.js: validación de campos y funcionamiento de Cancelar.
+
+Variables principales: botonIniciar, botonCancelar, campoUsuario,
+campoContrasena, formularioAcceso y mensajeEstado.
+En JavaScript no se permiten espacios en nombres de variables.
+
+El logo es un marcador de posición, igual que en la referencia.
+Iniciar verifica que los campos estén completos. No autentica usuarios:
+para un inicio de sesión real necesitas un servidor y una base de datos.
+```
+
+## **5. Descargar los archivos**
+
+**imperio-login-extraido.zip**
+
+ZIP con los cuatro archivos originales organizados en la carpeta imperio.
+
+Descargar los archivos del proyecto
+
+### **Cómo ejecutar el proyecto**
+
+1. Descarga el ZIP.
+2. Extrae su contenido.
+3. Abre la carpeta `imperio`.
+4. Verifica que estén los cuatro archivos.
+5. Haz doble clic en `index.html`.
+6. La página se abrirá en tu navegador.
+
+Este proyecto es una **maqueta funcional de Front End**, con validación de campos y diseño adaptable, pero todavía no cuenta con autenticación real ni conexión a base de datos.
+
+Cuando quieras, podemos continuar con la siguiente etapa del proyecto y construir el Backend de autenticación, explicando cada paso como en una clase de desarrollo Full Stack.
+
+prueba:
+![Captura 3R3](./capturas/captura3R3.jpg)
